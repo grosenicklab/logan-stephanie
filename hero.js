@@ -190,17 +190,9 @@
   //
   // Pitch comes from the rect's initial palette color (PALETTE_NOTES).
 
-  // D minor pentatonic + extensions, spread across three octaves and
-  // aligned to PALETTE order (cream → high airy, ocean/clay → low warm).
-  const PALETTE_NOTES = [
-    587.33,  // D5  — cream
-    392.00,  // G4  — sand
-    293.66,  // D4  — amber
-    220.00,  // A3  — terracotta
-    349.23,  // F4  — dusty pink
-    146.83,  // D3  — clay
-    174.61   // F3  — ocean
-  ];
+  // (PALETTE_NOTES, BELL_NOTES, TUNINGS, BELL_MAP are defined below in
+  // the Optional audio samples block — multiple tunings selectable
+  // via URL hash, e.g. #tuning=lydian.)
 
   let audioCtx = null;
   let masterGain = null;
@@ -213,14 +205,70 @@
   // ── Optional audio samples ───────────────────────────────────────
   // The script tries to load real recordings from /sounds/ on page
   // load. If they're present, the surf sample replaces the synthetic
-  // wave layer and bird playback prefers samples over synthesis. If
-  // a file is missing, that layer silently falls back to synthesis —
-  // the site always works whether or not the samples exist.
-  //   /sounds/surf.mp3                 — seamless surf loop (~15–30 s)
-  //   /sounds/birds/bird-01.mp3 … 12.mp3 — short tropical bird clips
-  let surfBuffer = null;       // AudioBuffer, set when sound decodes
-  const birdBuffers = [];      // array of decoded bird AudioBuffers
-  let surfSampleGain = null;   // gain node for the live sample player
+  // wave layer, bird events use samples, and the wind chimes are
+  // replaced by real vibraphone notes. If a file is missing, that
+  // layer falls back to synthesis — site always works either way.
+  //   /sounds/surf.mp3                  — seamless surf loop (~15–30 s)
+  //   /sounds/birds/bird-01.mp3 … 12.mp3  — short tropical bird clips
+  //   /sounds/bells/{B3,E4,Gb4,G4,Db5,E5,A5}.m4a — UofI vibraphone notes
+  let surfBuffer = null;
+  const birdBuffers = [];
+  const bellBuffers = {};      // note name → AudioBuffer
+  let surfSampleGain = null;
+
+  // Available vibraphone notes (UofI MIS, ≈ chromatic B3–E6) and their
+  // 12-TET frequencies. Each palette pitch is realized by playing the
+  // closest sample with a small playbackRate shift to hit the exact
+  // target — this lets us swap tuning systems without re-downloading.
+  const BELL_NOTES = {
+    'B3':  246.94, 'C4':  261.63, 'D4':  293.66, 'E4':  329.63,
+    'F4':  349.23, 'Gb4': 369.99, 'G4':  391.99, 'A4':  440.00,
+    'B4':  493.88, 'C5':  523.25, 'Db5': 554.37, 'D5':  587.33,
+    'E5':  659.25, 'F5':  698.46, 'Gb5': 739.99, 'G5':  783.99,
+    'A5':  880.00, 'Bb5': 932.33, 'B5':  987.77, 'C6':  1046.50,
+    'D6':  1174.66, 'E6': 1318.51
+  };
+
+  // Tuning presets — each is the seven palette pitches in the order
+  // [cream, sand, amber, terracotta, dusty pink, clay, ocean].
+  // Pick one at runtime via URL hash: e.g.  #tuning=lydian
+  const TUNINGS = {
+    // Overtones 8/11/12/13/18/22/30 of a 30 Hz sub-audio fundamental.
+    // Microtonal weirdness on 11th/13th/22nd — bright and uplifting.
+    harmonic: [900, 660, 540, 360, 390, 330, 240],
+
+    // Just-intonation C major over two octaves — clean wedding bells.
+    just:     [1318.51, 1046.50, 783.99, 587.33, 659.25, 392.00, 261.63],
+
+    // C Lydian — same as major but with raised 4th (F#, the tritone).
+    // Brightest of the diatonic modes; slightly otherworldly.
+    lydian:   [1318.51,  987.77, 880.00, 587.33, 739.99, 392.00, 261.63],
+
+    // Wendy Carlos α scale — 78-cent steps, no octave equivalence,
+    // designed to maximise major-sounding harmonies in weird intervals.
+    alpha:    [1010.6,  806.8,  644.1,  392.0,  491.6,  327.5,  261.63],
+
+    // Indonesian Pelog — ceremonial gamelan tuning, 7-note irregular
+    // spacing; exotic but rooted, often used in temple music.
+    pelog:    [ 906,    784,    726,    578,    498,    265,    247  ]
+  };
+
+  const tuningName = ((location.hash.match(/tuning=(\w+)/) || [])[1] || 'just').toLowerCase();
+  const PALETTE_NOTES = TUNINGS[tuningName] || TUNINGS.just;
+
+  // For each palette target, pick the available bell whose 12-TET pitch
+  // is closest in cents — minimises the playbackRate shift so the
+  // vibraphone timbre is preserved.
+  const BELL_NAMES_LIST = Object.keys(BELL_NOTES);
+  const BELL_MAP = PALETTE_NOTES.map(target => {
+    let bestName = BELL_NAMES_LIST[0];
+    let bestCents = Math.abs(1200 * Math.log2(target / BELL_NOTES[bestName]));
+    for (const n of BELL_NAMES_LIST) {
+      const c = Math.abs(1200 * Math.log2(target / BELL_NOTES[n]));
+      if (c < bestCents) { bestName = n; bestCents = c; }
+    }
+    return { name: bestName, base: BELL_NOTES[bestName] };
+  });
 
   // Fetch ArrayBuffers eagerly (before user gesture). They wait in
   // memory until initAudio() runs and we have an AudioContext to
@@ -234,6 +282,13 @@
     const name = `sounds/birds/bird-${String(i).padStart(2, '0')}.mp3`;
     birdArrayPromises.push(fetchOrNull(name));
   }
+  // Fetch ALL bells so any tuning works at runtime — the active subset
+  // is determined by BELL_MAP, but having the full chromatic set lets
+  // a tuning hash-swap take effect immediately on reload.
+  const bellArrayPromises = {};
+  BELL_NAMES_LIST.forEach(name => {
+    bellArrayPromises[name] = fetchOrNull(`sounds/bells/${name}.m4a`);
+  });
 
   const initAudio = () => {
     if (audioCtx) return;
@@ -336,6 +391,58 @@
         }).catch(() => {});
       });
     });
+    // Bells: each note decoded into bellBuffers keyed by note name.
+    // spawnChime() prefers real samples over the synth fallback.
+    Object.entries(bellArrayPromises).forEach(([name, p]) => {
+      p.then(arrBuf => {
+        if (!arrBuf) return;
+        audioCtx.decodeAudioData(arrBuf.slice(0)).then(buf => {
+          bellBuffers[name] = buf;
+        }).catch(() => {});
+      });
+    });
+  };
+
+  // Play one bell sample, pitch-shifted via playbackRate to the
+  // exact palette frequency. Velocity-scaled like the synth bells.
+  const spawnBellSample = (buf, rate) => {
+    if (!audioCtx || !audioOn) return;
+    const now = audioCtx.currentTime;
+    const v = 0.7 + Math.random() * 0.3;
+
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.playbackRate.value = rate;
+
+    const gain = audioCtx.createGain();
+    const peak = 0.30 * v;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(peak, now + 0.005);
+
+    // Vibraphone sustains naturally for several seconds — let it ring
+    // but cap at 5.5 s with a graceful tail.
+    const natDur = buf.duration / rate;
+    const dur = Math.min(natDur, 5.5);
+    if (dur >= 5.0) {
+      gain.gain.setValueAtTime(peak, now + dur - 0.6);
+      gain.gain.linearRampToValueAtTime(0.0001, now + dur);
+    }
+
+    // Same dry/wet split as the synth bells: mostly direct, plus a
+    // send to the shared delay halo.
+    const dryGain = audioCtx.createGain();
+    dryGain.gain.value = 0.85;
+
+    src.connect(gain);
+    gain.connect(dryGain).connect(masterGain);
+    gain.connect(delayBus);
+
+    src.start(now);
+    src.stop(now + dur + 0.05);
+
+    setTimeout(() => {
+      try { src.disconnect(); gain.disconnect(); dryGain.disconnect(); } catch (_) {}
+    }, (dur + 0.3) * 1000);
   };
 
   // Cross-fade from synthetic waves to the surf sample. Uses an
@@ -480,155 +587,13 @@
   };
 
   // ── Tropical birds ──────────────────────────────────────────────
-  // Four call types, picked by weighted random per event:
-  //   chatter — quick chips in sequence (kingbirds, flycatchers)
-  //   warble  — sustained tone with vibrato (oropendolas, orioles)
-  //   whistle — slow gliss between two pitches (motmots, quail)
-  //   squawk  — filtered sawtooth glide (parrots, chachalacas)
-  // All feed into the delay halo so they echo into the canopy.
-
-  const playTone = (freq, dur, peak, type) => {
-    if (!audioCtx || !audioOn) return;
-    const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    osc.type = type || 'sine';
-    osc.frequency.value = freq;
-    const g = audioCtx.createGain();
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(peak, now + 0.006);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    osc.connect(g);
-    g.connect(masterGain);
-    g.connect(delayBus);
-    osc.start(now);
-    osc.stop(now + dur + 0.05);
-    setTimeout(() => { try { osc.disconnect(); g.disconnect(); } catch (_) {} },
-               (dur + 0.2) * 1000);
-  };
-
-  const spawnChatter = () => {
-    const count    = 4 + Math.floor(Math.random() * 5);   // 4–8 chips
-    const baseFreq = 2000 + Math.random() * 1600;
-    const peak     = 0.020 + Math.random() * 0.008;
-    for (let i = 0; i < count; i++) {
-      setTimeout(() => {
-        if (!audioOn) return;
-        const f = baseFreq * (0.82 + Math.random() * 0.45);
-        playTone(f, 0.045 + Math.random() * 0.05, peak, 'sine');
-      }, i * (55 + Math.random() * 55));   // 55–110 ms between chips
-    }
-  };
-
-  const spawnWarble = () => {
-    if (!audioCtx || !audioOn) return;
-    const now = audioCtx.currentTime;
-    const freq = 1300 + Math.random() * 1100;
-    const dur  = 0.45 + Math.random() * 0.55;             // 450–1000 ms
-
-    const osc = audioCtx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = freq;
-
-    // Vibrato — 5–8 Hz LFO on frequency, ±25–55 Hz depth.
-    const vib = audioCtx.createOscillator();
-    vib.type = 'sine';
-    vib.frequency.value = 5 + Math.random() * 3;
-    const vibDepth = audioCtx.createGain();
-    vibDepth.gain.value = 25 + Math.random() * 30;
-    vib.connect(vibDepth).connect(osc.frequency);
-
-    const g = audioCtx.createGain();
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.022, now + 0.06);
-    g.gain.setValueAtTime(0.022, now + dur - 0.12);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-
-    osc.connect(g);
-    g.connect(masterGain);
-    g.connect(delayBus);
-
-    osc.start(now);
-    vib.start(now);
-    osc.stop(now + dur + 0.05);
-    vib.stop(now + dur + 0.05);
-    setTimeout(() => {
-      try { osc.disconnect(); vib.disconnect(); vibDepth.disconnect(); g.disconnect(); } catch (_) {}
-    }, (dur + 0.2) * 1000);
-  };
-
-  const spawnWhistle = () => {
-    if (!audioCtx || !audioOn) return;
-    const now = audioCtx.currentTime;
-    const f1 = 900 + Math.random() * 800;                 // 900–1700 Hz
-    const f2 = f1 * (0.7 + Math.random() * 0.6);
-    const dur = 0.4 + Math.random() * 0.4;
-
-    const osc = audioCtx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(f1, now);
-    osc.frequency.exponentialRampToValueAtTime(Math.max(f2, 200), now + dur);
-
-    const g = audioCtx.createGain();
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.024, now + 0.05);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-
-    osc.connect(g);
-    g.connect(masterGain);
-    g.connect(delayBus);
-
-    osc.start(now);
-    osc.stop(now + dur + 0.05);
-    setTimeout(() => { try { osc.disconnect(); g.disconnect(); } catch (_) {} },
-               (dur + 0.2) * 1000);
-  };
-
-  const spawnSquawk = () => {
-    if (!audioCtx || !audioOn) return;
-    const now = audioCtx.currentTime;
-    const f1 = 520 + Math.random() * 400;                 // 520–920 Hz (parrot-ish)
-    const f2 = f1 * (0.65 + Math.random() * 0.5);
-    const dur = 0.22 + Math.random() * 0.28;
-
-    const osc = audioCtx.createOscillator();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(f1, now);
-    osc.frequency.exponentialRampToValueAtTime(Math.max(f2, 180), now + dur);
-
-    const lp = audioCtx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 1600;
-    lp.Q.value = 1.2;
-
-    const g = audioCtx.createGain();
-    g.gain.setValueAtTime(0.0001, now);
-    g.gain.exponentialRampToValueAtTime(0.025, now + 0.015);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-
-    osc.connect(lp).connect(g);
-    g.connect(masterGain);
-    g.connect(delayBus);
-
-    osc.start(now);
-    osc.stop(now + dur + 0.05);
-    setTimeout(() => {
-      try { osc.disconnect(); lp.disconnect(); g.disconnect(); } catch (_) {}
-    }, (dur + 0.2) * 1000);
-  };
-
+  // Sample-only. Each event picks a random recording from birdBuffers
+  // (CC BY-SA 4.0 xeno-canto uploads in /sounds/birds/). If samples
+  // haven't loaded yet — or the directory is empty — this is a no-op
+  // and the chirp just doesn't happen.
   const spawnBird = () => {
-    // Mix real samples with synthesis. When samples are loaded, ~65% of
-    // chirps use a recording; the rest fall through to a synth call so
-    // the texture still has its existing voice.
-    // (Whistle removed — sounded too synth-spacy.)
-    if (birdBuffers.length > 0 && Math.random() < 0.65) {
-      spawnBirdSample();
-      return;
-    }
-    const r = Math.random();
-    if      (r < 0.50) spawnChatter();
-    else if (r < 0.85) spawnWarble();
-    else               spawnSquawk();
+    if (birdBuffers.length === 0) return;
+    spawnBirdSample();
   };
 
   const scheduleBird = () => {
@@ -645,28 +610,48 @@
     }, delay);
   };
 
-  // Wind chime voice. Three inharmonic sine partials at Chowning bell
-  // ratios (1×, 2.756×, 5.404×) — fundamental rings longest, higher
-  // partials decay faster, giving the metallic shimmer that fades into
-  // pure tone. Each click is a soft strike, not a pad.
+  // Church-handbell voice — hand-cast bronze bell struck by a felt/
+  // leather clapper. Pure harmonic partials (1×, 1.5×, 2×, 3×, 4×) —
+  // the perfect-5th quint at 1.5× is what gives handbells their
+  // characteristic sweet ring. Clean strike (no wooden transient),
+  // moderate decays (3–5 s on the fundamental). Tighter velocity
+  // range than outdoor chimes — handbell ringers play with control.
+  // Slightly drier mix (more direct, less halo) for an indoor feel.
   const spawnChime = (noteIndex) => {
     if (!audioCtx || !audioOn) return;
     const freq = PALETTE_NOTES[noteIndex];
     if (!freq) return;
     const now = audioCtx.currentTime;
 
+    // Prefer real vibraphone samples when loaded — pitch-shift via
+    // playbackRate to hit the exact Harmonic Series Mode target.
+    const mapping = BELL_MAP[noteIndex];
+    if (mapping && bellBuffers[mapping.name]) {
+      spawnBellSample(bellBuffers[mapping.name], freq / mapping.base);
+      return;
+    }
+
+    const v = 0.7 + Math.random() * 0.3;   // controlled strike intensity
+
     const partials = [
-      { ratio: 1.000, gain: 0.020, decay: 4.5 + Math.random() * 1.8 },
-      { ratio: 2.756, gain: 0.011, decay: 2.4 + Math.random() * 1.2 },
-      { ratio: 5.404, gain: 0.005, decay: 1.1 + Math.random() * 0.6 }
+      { ratio: 1.000, gain: 0.013 * v,  decay: 3.8 + Math.random() * 1.5 },  // fundamental
+      { ratio: 1.500, gain: 0.009 * v,  decay: 3.2 + Math.random() * 1.2 },  // quint (perfect 5th) — handbell signature
+      { ratio: 2.000, gain: 0.007 * v,  decay: 2.5 + Math.random() * 1.0 },  // octave (nominal)
+      { ratio: 3.000, gain: 0.004 * v,  decay: 1.5 + Math.random() * 0.5 },  // 12th
+      { ratio: 4.000, gain: 0.002 * v,  decay: 1.0 + Math.random() * 0.4 }   // 2 octaves
     ];
 
     const voiceGain = audioCtx.createGain();
     voiceGain.gain.value = 1.0;
-    voiceGain.connect(masterGain);
+
+    // Drier than outdoor wind chimes — handbells are typically played
+    // indoors, so the direct sound dominates with a touch of room.
+    const dryGain = audioCtx.createGain();
+    dryGain.gain.value = 0.85;
+    voiceGain.connect(dryGain).connect(masterGain);
     voiceGain.connect(delayBus);
 
-    const nodes = [voiceGain];
+    const nodes = [voiceGain, dryGain];
 
     partials.forEach(p => {
       const osc = audioCtx.createOscillator();
@@ -674,7 +659,7 @@
       osc.frequency.value = freq * p.ratio;
 
       const g = audioCtx.createGain();
-      const attack = 0.02 + Math.random() * 0.04;         // 20–60 ms strike
+      const attack = 0.005 + Math.random() * 0.007;       // 5–12 ms — quick clapper strike
       g.gain.setValueAtTime(0.0001, now);
       g.gain.exponentialRampToValueAtTime(p.gain, now + attack);
       g.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);

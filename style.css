@@ -7,8 +7,36 @@
   --rule:      #C8B79E;
   --accent:    #B85B3F;
 
+  /* Mazunte palette — same colors as the hero canvas. Used by the
+     animated section-media gradients below to extend the hero's
+     color bands into each section. */
+  --p-cream:      #F2E4CB;
+  --p-sand:       #E8C9A0;
+  --p-amber:      #D4924E;
+  --p-terracotta: #B85B3F;
+  --p-pink:       #D88B86;
+  --p-clay:       #7D4A3A;
+  --p-ocean:      #3A6B85;
+
   --sans: "Inter Tight", "Helvetica Neue", Helvetica, "Inter", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
+
+@property --band-c1 { syntax: '<color>'; initial-value: #B85B3F; inherits: false; }
+@property --band-c2 { syntax: '<color>'; initial-value: #D4924E; inherits: false; }
+
+@keyframes palette-breathe {
+  0%   { --band-c1: #B85B3F; --band-c2: #D4924E; }
+  14%  { --band-c1: #D4924E; --band-c2: #F2E4CB; }
+  28%  { --band-c1: #F2E4CB; --band-c2: #E8C9A0; }
+  42%  { --band-c1: #E8C9A0; --band-c2: #D88B86; }
+  56%  { --band-c1: #D88B86; --band-c2: #3A6B85; }
+  70%  { --band-c1: #3A6B85; --band-c2: #7D4A3A; }
+  84%  { --band-c1: #7D4A3A; --band-c2: #B85B3F; }
+  100% { --band-c1: #B85B3F; --band-c2: #D4924E; }
+}
+
+
+
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -179,6 +207,20 @@ a { color: inherit; }
 
 main {
   background: var(--paper);
+  position: relative;
+}
+
+/* Colored band after the last section — extends only to the halfway
+   point so it lines up with the side bands above. Same Mazunte palette,
+   staggered to a distinct point in the cycle. */
+main::after {
+  content: '';
+  display: block;
+  width: 50vw;
+  height: clamp(24rem, 96vh, 96rem);
+  background: linear-gradient(160deg, var(--band-c1, #B85B3F), var(--band-c2, #D4924E));
+  animation: palette-breathe 35s linear infinite;
+  animation-delay: -9s;
 }
 
 .section {
@@ -187,15 +229,106 @@ main {
   padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 3vw, 3rem);
   display: grid;
   grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "head  body"
+    "media body";
   gap: clamp(2rem, 5vw, 5rem);
-  border-bottom: 1px solid var(--rule);
+  position: relative;
 }
 
-.section-head {
-  align-self: start;
-  position: sticky;
-  top: 2rem;
+/* Full-viewport-width divider line between sections — extends past the
+   centered max-width so it spans the entire screen. */
+.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  height: 1px;
+  background: var(--rule);
+  z-index: 4;
 }
+
+.section-head  { grid-area: head;  align-self: start; position: sticky; top: 2rem; z-index: 3; }
+.section-media { grid-area: media; align-self: start; }
+.section-body  { grid-area: body; }
+
+.section-media {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  margin: 0;
+}
+.section-media img,
+.section-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.section-media:empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.section-media:empty::after {
+  content: attr(data-section);
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--rule);
+}
+
+/* ── Banded sections ────────────────────────────────────────────
+   #travel and #schedule. The base centered grid is preserved (so
+   the photos line up across all five sections); the band is a
+   ::before backdrop that extends from viewport-left across more
+   than half the screen, with a soft mask fade on its right edge so
+   the body text on the right keeps sitting on paper. Gradient
+   breathes through the Mazunte palette like the hero rectangles. */
+.section--band {
+  position: relative;
+}
+.section--band::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 50vw);
+  width: 50vw;            /* extends to viewport center = hero's centerline */
+  z-index: 0;
+  background: linear-gradient(160deg, var(--band-c1, #B85B3F), var(--band-c2, #D4924E));
+  animation: palette-breathe 35s linear infinite;
+}
+#schedule.section--band::before { animation-delay: -18s; }
+
+/* Head keeps its base position: sticky and z-index: 3 — always on top
+   of everything else in the section. Media and body get explicit
+   position so their z-index applies and they sit above the gradient
+   but below the heading. */
+.section--band .section-media { position: relative; z-index: 1; }
+.section--band .section-body  { position: relative; z-index: 1; }
+
+/* Body text in banded sections is pushed right past the band so it
+   sits on paper (not the rectangle). The band ends at 50vw, so the
+   padding needs to push body content past viewport-center across all
+   desktop widths. Photos in the left column stay aligned with non-
+   banded sections because the image grid cell is unchanged. */
+.section--band .section-body {
+  padding-left: clamp(9rem, 14vw, 14rem);
+}
+.section--band .section-head .section-num {
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+.section--band .section-head h2 {
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.32);
+}
+
 
 .section-num {
   display: block;
@@ -270,6 +403,61 @@ main {
   font-size: 0.85rem;
   color: var(--ink-soft);
   margin-top: 0.2rem;
+}
+
+/* rooms (Stay section) */
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.rooms-grid .room {
+  border-top: 1px solid var(--rule);
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.rooms-grid dt {
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.35rem;
+}
+.rooms-grid .room-meta {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0;
+}
+.rooms-grid .room-price {
+  font-family: var(--sans);
+  font-weight: 300;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  border-bottom: 1px dotted var(--rule);
+  letter-spacing: -0.01em;
+}
+.rooms-grid .room-price:last-child { border-bottom: none; }
+.rooms-grid .price-label {
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.rooms-grid .price-value {
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 
 /* schedule */
@@ -347,9 +535,18 @@ main {
 @media (max-width: 760px) {
   .section {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "head"
+      "media"
+      "body";
     gap: 1.5rem;
   }
   .section-head { position: static; }
+  .section-media { aspect-ratio: 3 / 2; }
+  .section--band::before { display: none; }
+  .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
+  .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
+  main::after { height: clamp(4rem, 16vh, 8rem); }
   .hero-nav { gap: 0.85rem; }
   .hero-overlay { padding: 1.1rem; }
   .schedule li { grid-template-columns: 1fr; gap: 0.3rem; }
