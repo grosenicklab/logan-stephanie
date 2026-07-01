@@ -228,24 +228,39 @@ main {
   position: relative;
 }
 
-/* Colored band after the last section — extends only to the halfway
-   point so it lines up with the side bands above. Same Mazunte palette,
-   staggered to a distinct point in the cycle. Now contains a sixth
-   photo slot centred within it. */
+/* Bottom rectangle — mirrors .section's centered grid so the image
+   sits in the exact same left-column position as the section images.
+   The colored band (::before) escapes the max-width to fill the left
+   50vw and stays behind the image via z-index. */
 .page-bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 3vw, 3rem);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas: "media body";
+  gap: clamp(2rem, 5vw, 5rem);
+  min-height: clamp(24rem, 96vh, 96rem);
+  position: relative;
+}
+.page-bottom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 50vw);
   width: 50vw;
-  height: clamp(24rem, 96vh, 96rem);
+  z-index: 0;
   background: linear-gradient(160deg, var(--band-c1, #B85B3F), var(--band-c2, #D4924E));
   animation: palette-breathe 35s linear infinite;
   animation-delay: -9s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(2rem, 5vw, 5rem);
 }
 .page-bottom-media {
+  grid-area: media;
+  align-self: start;
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 380px;   /* match a section image at wide viewports */
   aspect-ratio: 4 / 5;
   overflow: hidden;
   margin: 0;
@@ -566,13 +581,15 @@ main {
   .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
   .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
   .page-bottom {
-    width: 100%;
-    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-areas: "media";
+    max-width: none;
+    min-height: auto;
     padding: 2rem;
+    gap: 0;
   }
   .page-bottom-media {
     aspect-ratio: auto;
-    max-width: 100%;
     border: none;
     background: transparent;
   }
