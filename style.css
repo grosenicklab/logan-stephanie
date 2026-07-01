@@ -230,15 +230,33 @@ main {
 
 /* Colored band after the last section — extends only to the halfway
    point so it lines up with the side bands above. Same Mazunte palette,
-   staggered to a distinct point in the cycle. */
-main::after {
-  content: '';
-  display: block;
+   staggered to a distinct point in the cycle. Now contains a sixth
+   photo slot centred within it. */
+.page-bottom {
   width: 50vw;
   height: clamp(24rem, 96vh, 96rem);
   background: linear-gradient(160deg, var(--band-c1, #B85B3F), var(--band-c2, #D4924E));
   animation: palette-breathe 35s linear infinite;
   animation-delay: -9s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 5rem);
+}
+.page-bottom-media {
+  width: 100%;
+  max-width: 60ch;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--rule);
+  background: var(--cream);
+}
+.page-bottom-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .section {
@@ -532,12 +550,36 @@ main::after {
     gap: 1.5rem;
   }
   .section-head { position: static; }
-  .section-media { aspect-ratio: 3 / 2; }
+  .section-media {
+    aspect-ratio: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+  .section-media img,
+  .section-media video {
+    height: auto;
+    object-fit: contain;
+  }
   .section-body { margin-left: 0; }
   .section--band::before { display: none; }
   .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
   .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
-  main::after { height: clamp(4rem, 16vh, 8rem); }
+  .page-bottom {
+    width: 100%;
+    height: auto;
+    padding: 2rem;
+  }
+  .page-bottom-media {
+    aspect-ratio: auto;
+    max-width: 100%;
+    border: none;
+    background: transparent;
+  }
+  .page-bottom-media img {
+    height: auto;
+    object-fit: contain;
+  }
   .hero-nav { gap: 0.85rem; }
   .hero-overlay { padding: 1.1rem; }
   .schedule li { grid-template-columns: 1fr; gap: 0.3rem; }

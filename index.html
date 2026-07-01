@@ -185,6 +185,12 @@
       </div>
     </section>
 
+    <div class="page-bottom">
+      <figure class="page-bottom-media" data-section="bottom">
+        <img src="images/wedding.jpg" alt="">
+      </figure>
+    </div>
+
   </main>
 
   <footer class="site-footer">
@@ -193,6 +199,20 @@
     <span><a href="attribution.html">Credits</a> · <a href="#top">Back to top</a></span>
   </footer>
 
+  <script>
+    // Shuffle the photos across the six image slots (five sections + the
+    // bottom rectangle) on each load. If more photos exist than slots,
+    // a random subset is used; if fewer, one may repeat.
+    (function () {
+      const pool = ['activities.jpg', 'schedule.jpg', 'stay.jpg', 'travel.jpg', 'wedding.jpg'];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const slots = document.querySelectorAll('.section-media img, .page-bottom-media img');
+      slots.forEach((img, i) => { img.src = 'images/' + pool[i % pool.length]; });
+    })();
+  </script>
   <script src="hero.js"></script>
 </body>
 </html>
