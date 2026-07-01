@@ -700,20 +700,15 @@
 
   // ── interaction ──────────────────────────────────────────────────
 
-  canvas.addEventListener('click', e => {
+  // Core click handler — takes canvas-space (px, py) and either splits
+  // the hit rect or rejoins its parent (with associated chimes).
+  const clickAt = (px, py) => {
     if (!root) return;
-
-    // First click anywhere on the canvas also activates the soundscape.
     if (!audioOn) startAudio();
-
-    const rect = canvas.getBoundingClientRect();
-    const px = e.clientX - rect.left;
-    const py = e.clientY - rect.top;
     const hit = root.hit(px, py);
     if (!hit) return;
     const totalArea = width * height;
     const area = (hit.w * hit.h) / totalArea;
-
     if (area > MIN_AREA && hit.depth < SPLIT_LIMIT) {
       hit.split();
       spawnChime(hit.left.noteIndex);
@@ -722,6 +717,66 @@
       hit.parent.rejoin();
       spawnChime(hit.parent.noteIndex);
     }
+  };
+
+  // Drag support — hold and drag paints new clicks along the path.
+  // A drag-click fires each time the pointer moves ≥ DRAG_MIN_DIST
+  // from the previous drag position, so fast drags don't spam.
+  const DRAG_MIN_DIST = 44;
+  let isDragging = false;
+  let didDrag = false;
+  let lastDragX = 0;
+  let lastDragY = 0;
+
+  const dragStart = (px, py) => {
+    isDragging = true;
+    didDrag = false;
+    lastDragX = px;
+    lastDragY = py;
+  };
+  const dragMove = (px, py) => {
+    if (!isDragging) return;
+    if (Math.hypot(px - lastDragX, py - lastDragY) < DRAG_MIN_DIST) return;
+    lastDragX = px;
+    lastDragY = py;
+    didDrag = true;
+    clickAt(px, py);
+  };
+  const dragEnd = () => { isDragging = false; };
+
+  const rectOf = e => canvas.getBoundingClientRect();
+
+  // Mouse
+  canvas.addEventListener('mousedown', e => {
+    const r = rectOf(e);
+    dragStart(e.clientX - r.left, e.clientY - r.top);
+  });
+  canvas.addEventListener('mousemove', e => {
+    const r = rectOf(e);
+    dragMove(e.clientX - r.left, e.clientY - r.top);
+  });
+  canvas.addEventListener('mouseup', dragEnd);
+  canvas.addEventListener('mouseleave', dragEnd);
+
+  // Touch
+  canvas.addEventListener('touchstart', e => {
+    const t = e.touches[0]; if (!t) return;
+    const r = rectOf(e);
+    dragStart(t.clientX - r.left, t.clientY - r.top);
+  }, { passive: true });
+  canvas.addEventListener('touchmove', e => {
+    const t = e.touches[0]; if (!t) return;
+    const r = rectOf(e);
+    dragMove(t.clientX - r.left, t.clientY - r.top);
+  }, { passive: true });
+  canvas.addEventListener('touchend', dragEnd);
+  canvas.addEventListener('touchcancel', dragEnd);
+
+  // Single click — but suppress the trailing click if the user dragged.
+  canvas.addEventListener('click', e => {
+    if (didDrag) { didDrag = false; return; }
+    const r = rectOf(e);
+    clickAt(e.clientX - r.left, e.clientY - r.top);
   });
 
   // Debounced resize — full rebuild keeps the layout from getting weird.

@@ -163,6 +163,24 @@ a { color: inherit; }
   text-transform: uppercase;
 }
 
+
+/* Top-left stack: "Save the Date" with a discreet RSVP line under it.
+   Both read in the same tracked-uppercase register as the rest of the
+   hero corner labels. */
+.hero-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.hero-rsvp {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
 .hero-nav {
   display: flex;
   gap: clamp(0.85rem, 2vw, 1.75rem);
@@ -312,14 +330,6 @@ main::after {
 .section--band .section-media { position: relative; z-index: 1; }
 .section--band .section-body  { position: relative; z-index: 1; }
 
-/* Body text in banded sections is pushed right past the band so it
-   sits on paper (not the rectangle). The band ends at 50vw, so the
-   padding needs to push body content past viewport-center across all
-   desktop widths. Photos in the left column stay aligned with non-
-   banded sections because the image grid cell is unchanged. */
-.section--band .section-body {
-  padding-left: clamp(9rem, 14vw, 14rem);
-}
 .section--band .section-head .section-num {
   color: rgba(255,255,255,0.85);
   text-shadow: 0 1px 3px rgba(0,0,0,0.25);
@@ -353,7 +363,15 @@ main::after {
   font-size: 1.02rem;
   color: var(--ink-soft);
   max-width: 60ch;
+  margin-left: clamp(9rem, 14vw, 14rem);   /* aligned across all sections */
 }
+.section-body a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: border-color 200ms ease;
+}
+.section-body a:hover { border-color: currentColor; }
 
 .lead {
   font-family: var(--sans);
@@ -368,6 +386,24 @@ main::after {
 .lead em {
   font-style: italic;
   font-weight: 300;
+}
+
+/* Save-the-date RSVP call in the Wedding section — tracked-uppercase
+   accent color so it visually carries weight without looking shouty. */
+.rsvp-call {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+}
+.rsvp-call strong {
+  font-weight: 600;
 }
 
 /* travel grid */
@@ -404,60 +440,14 @@ main::after {
   color: var(--ink-soft);
   margin-top: 0.2rem;
 }
-
-/* rooms (Stay section) */
-
-.rooms-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
-}
-.rooms-grid .room {
-  border-top: 1px solid var(--rule);
-  padding-top: 0.75rem;
-  display: flex;
-  flex-direction: column;
-}
-.rooms-grid dt {
-  font-weight: 500;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+.info-grid .price-detail {
+  display: block;
+  font-size: 0.78rem;
   color: var(--ink-soft);
-  margin-bottom: 0.35rem;
-}
-.rooms-grid .room-meta {
-  font-family: var(--sans);
   font-weight: 300;
-  font-style: italic;
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-  margin-bottom: 0.85rem;
   letter-spacing: 0;
-}
-.rooms-grid .room-price {
-  font-family: var(--sans);
-  font-weight: 300;
-  color: var(--ink);
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 0.3rem 0;
-  border-bottom: 1px dotted var(--rule);
-  letter-spacing: -0.01em;
-}
-.rooms-grid .room-price:last-child { border-bottom: none; }
-.rooms-grid .price-label {
-  font-weight: 500;
-  font-size: 0.66rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-.rooms-grid .price-value {
-  font-size: 1.05rem;
-  font-variant-numeric: tabular-nums;
+  margin-top: 0.15rem;
+  line-height: 1.35;
 }
 
 /* schedule */
@@ -543,6 +533,7 @@ main::after {
   }
   .section-head { position: static; }
   .section-media { aspect-ratio: 3 / 2; }
+  .section-body { margin-left: 0; }
   .section--band::before { display: none; }
   .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
   .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
