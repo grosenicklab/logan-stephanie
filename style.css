@@ -228,30 +228,40 @@ main {
   position: relative;
 }
 
-/* Bottom rectangle — inherits everything from .section (centered grid,
-   1fr/2fr, same padding + gap) so its image lines up exactly with the
-   section images above. Only additions: a min-height, a colored band
-   drawn as ::before that escapes to the left 50vw of the viewport,
-   and suppression of the section divider line. */
+/* Bottom rectangle — the coloured band is exactly 50vw wide at the
+   left of the viewport (unchanged from the original placement). The
+   image inside is sized and positioned to match the section-image
+   grid math exactly, using the same expressions the .section grid
+   would produce for its 1fr media column. */
 .page-bottom {
-  min-height: clamp(24rem, 96vh, 96rem);
-}
-.page-bottom::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: calc(50% - 50vw);
   width: 50vw;
-  z-index: 0;
+  min-height: clamp(24rem, 96vh, 96rem);
+  box-sizing: border-box;
   background: linear-gradient(160deg, var(--band-c1, #B85B3F), var(--band-c2, #D4924E));
   animation: palette-breathe 35s linear infinite;
   animation-delay: -9s;
+  padding-top: clamp(4rem, 8vw, 8rem);
+  padding-bottom: clamp(4rem, 8vw, 8rem);
+  /* left offset from viewport = section-left + section-padding-left,
+     matching where a section image begins */
+  padding-left: calc(max((100vw - 1280px) / 2, 0px) + clamp(1.5rem, 3vw, 3rem));
+  padding-right: 0;
 }
-.page-bottom::after { display: none; }   /* no divider line at the very bottom */
-.page-bottom .page-bottom-media {
-  position: relative;
-  z-index: 1;
+.page-bottom-media {
+  /* Same width as a .section-media (1fr of the centered section grid):
+     (content width - column gap) / 3 */
+  width: calc((min(100vw, 1280px) - 2 * clamp(1.5rem, 3vw, 3rem) - clamp(2rem, 5vw, 5rem)) / 3);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--rule);
+  background: var(--cream);
+}
+.page-bottom-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .section {
@@ -560,7 +570,21 @@ main {
   .section--band::before { display: none; }
   .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
   .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
-  .page-bottom { min-height: 0; }
+  .page-bottom {
+    width: 100%;
+    min-height: 0;
+    padding: 2rem;
+  }
+  .page-bottom-media {
+    width: auto;
+    aspect-ratio: auto;
+    border: none;
+    background: transparent;
+  }
+  .page-bottom-media img {
+    height: auto;
+    object-fit: contain;
+  }
   .hero-nav { gap: 0.85rem; }
   .hero-overlay { padding: 1.1rem; }
   .schedule li { grid-template-columns: 1fr; gap: 0.3rem; }
