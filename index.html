@@ -22,7 +22,7 @@
       <div class="hero-top">
         <div class="hero-stack">
           <span class="mono">Save&nbsp;the&nbsp;Date</span>
-          <span class="hero-rsvp">RSVP by August 1st</span>
+          <a class="hero-rsvp" href="#rsvp">RSVP by August 1st</a>
         </div>
         <span class="mono">Mazunte · Oaxaca · MX</span>
       </div>
@@ -44,6 +44,7 @@
             <a href="#stay">03 Stay</a>
             <a href="#schedule">04 Schedule</a>
             <a href="#activities">05 Activities</a>
+            <a href="#rsvp">06 RSVP</a>
           </nav>
         </div>
 
@@ -67,8 +68,8 @@
         <img src="images/wedding.jpg" alt="Engagement ring">
       </figure>
       <div class="section-body">
-        <p class="lead">We're getting married in Mazunte, the small town on the Pacific coast of southern Mexico where we met each other. The wedding runs four days, January 7 to 10, 2027.</p>
-        <p class="rsvp-call">Note rooms at the main hotel are limited and later bookers will have to stay offsite, so please RSVP by <strong>August 1st</strong>. If you'll need more time to decide or any help, let us know!</p>
+        <p class="lead">We're getting married in Mazunte, the small town on the Pacific coast of southern Mexico where we met each other. Celebrate with us from January 7 to 10, 2027.</p>
+        <p class="rsvp-call">Note rooms at the main hotel are limited and later bookers will have to stay offsite, so please <a href="#rsvp"><strong>RSVP by August 1st</strong></a>. If you'll need more time to decide or any help, let us know!</p>
       </div>
     </section>
 
@@ -185,6 +186,47 @@
       </div>
     </section>
 
+    <section id="rsvp" class="section">
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <h2>RSVP</h2>
+      </div>
+      <figure class="section-media" data-section="rsvp">
+        <img src="images/wedding.jpg" alt="">
+      </figure>
+      <div class="section-body">
+        <p class="lead">Please let us know if you can join us. Rooms are assigned in order of RSVP, so earlier is better.</p>
+        <form class="rsvp-form" novalidate>
+          <div class="field">
+            <label for="rsvp-names">Your name(s)</label>
+            <input type="text" id="rsvp-names" name="names" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="rsvp-email">Email</label>
+            <input type="email" id="rsvp-email" name="email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="rsvp-room">Room preference at Cocolia</label>
+            <select id="rsvp-room" name="room" required>
+              <option value="">Choose a room…</option>
+              <option value="Nature View">Nature View</option>
+              <option value="Premium Nature">Premium Nature</option>
+              <option value="Premium Ocean">Premium Ocean</option>
+              <option value="Horizon">Horizon</option>
+              <option value="Premium Horizon">Premium Horizon</option>
+              <option value="Offsite / decide later">Offsite or decide later</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rsvp-notes">Dietary needs or anything else we should know</label>
+            <textarea id="rsvp-notes" name="notes" rows="3"></textarea>
+          </div>
+          <button type="submit">Send RSVP</button>
+          <p class="rsvp-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
     <div class="page-bottom">
       <figure class="page-bottom-media" data-section="bottom">
         <img src="images/wedding.jpg" alt="">
@@ -217,5 +259,6 @@
     })();
   </script>
   <script src="hero.js"></script>
+  <script src="rsvp.js"></script>
 </body>
 </html>

@@ -428,6 +428,91 @@ main {
 .rsvp-call strong {
   font-weight: 600;
 }
+.rsvp-call a { color: inherit; }
+
+/* ── RSVP form (Section 06) ─────────────────────────────── */
+.rsvp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+  max-width: 40ch;
+}
+.rsvp-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.rsvp-form label {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.rsvp-form input,
+.rsvp-form select,
+.rsvp-form textarea {
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.5rem 0;
+  outline: none;
+  transition: border-color 200ms ease;
+  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+.rsvp-form select {
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%),
+                    linear-gradient(-45deg, transparent 50%, var(--ink-soft) 50%);
+  background-position: right 0.5em top 55%, right 0.25em top 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.5em;
+  cursor: pointer;
+}
+.rsvp-form input:focus,
+.rsvp-form select:focus,
+.rsvp-form textarea:focus {
+  border-bottom-color: var(--ink);
+}
+.rsvp-form textarea {
+  resize: vertical;
+  min-height: 3em;
+  line-height: 1.4;
+}
+.rsvp-form button {
+  align-self: flex-start;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  padding: 1rem 2.25rem;
+  cursor: pointer;
+  transition: background 200ms ease;
+  margin-top: 0.5rem;
+}
+.rsvp-form button:hover:not(:disabled) { background: var(--ink); }
+.rsvp-form button:disabled { opacity: 0.5; cursor: default; }
+.rsvp-status {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  min-height: 1.3em;
+  margin: 0.5rem 0 0;
+  line-height: 1.4;
+}
 
 /* travel grid */
 
