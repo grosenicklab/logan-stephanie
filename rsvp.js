@@ -4,7 +4,7 @@
    the same endpoint. Paste the deployment URL into RSVP_URL below. */
 
 (function () {
-  const RSVP_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+  const RSVP_URL = 'https://script.google.com/macros/s/AKfycbyW9Wc44-48Mx8Hcxsi3JZCWgqBRMc6prPUIr8Py8yxmT9sF47dt890JXvW7Hb98Cc/exec';
 
   const configured = /^https?:\/\//.test(RSVP_URL);
 
