@@ -245,7 +245,7 @@ main {
 }
 .page-bottom-media {
   width: 100%;
-  max-width: 60ch;
+  max-width: 380px;   /* match a section image at wide viewports */
   aspect-ratio: 4 / 5;
   overflow: hidden;
   margin: 0;
