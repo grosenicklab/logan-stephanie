@@ -24,15 +24,20 @@ function doPost(e) {
     const room = String(body.room || '').trim();
     const names = String(body.names || '').trim();
     const email = String(body.email || '').trim();
+    const roommate = String(body.roommate || '').trim();
     const notes = String(body.notes || '').trim();
 
     if (!names || !email) {
       return respond({ ok: false, error: 'name and email required' });
     }
+    // Room-mate name is required when a real room is chosen.
+    const isRoomChoice = room && !/offsite/i.test(room);
+    if (isRoomChoice && !roommate) {
+      return respond({ ok: false, error: 'please name who you\'re sharing the room with' });
+    }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const inv = ss.getSheetByName(INV_SHEET);
-    const isRoomChoice = room && !/offsite/i.test(room);
 
     let rowIndex = -1;
     let total = 0;
@@ -60,6 +65,7 @@ function doPost(e) {
       names,
       email,
       room || '(none chosen)',
+      roommate,
       notes,
       JSON.stringify(body)
     ]);
