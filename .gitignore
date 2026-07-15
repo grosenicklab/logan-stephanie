@@ -2,3 +2,7 @@
 .DS_Store
 *.log
 node_modules/
+
+# Personal files kept in the working folder but never published
+BUYOUT_LOGAN.pdf
+LEEGROSENICK.jpg
