@@ -443,13 +443,45 @@ main {
   flex-direction: column;
   gap: 0.4rem;
 }
-.rsvp-form label {
+/* Override needed because .field[hidden] would otherwise inherit
+   display: flex above and stay visible. */
+.rsvp-form .field[hidden] { display: none; }
+
+.rsvp-form label,
+.rsvp-form legend {
   font-family: var(--sans);
   font-weight: 500;
   font-size: 0.66rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-soft);
+}
+.rsvp-form fieldset.field {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+.rsvp-form fieldset.field legend {
+  padding: 0;
+  margin-bottom: 0.6rem;
+}
+.rsvp-form label.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  margin-right: 1.75rem;
+  cursor: pointer;
+}
+.rsvp-form label.radio input[type="radio"] {
+  width: auto;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 .rsvp-form input,
 .rsvp-form select,

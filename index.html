@@ -199,19 +199,24 @@
         <form class="rsvp-form" novalidate>
           <div class="field">
             <label for="rsvp-names">Your name</label>
-            <input type="text" id="rsvp-names" name="names" required autocomplete="name">
+            <input type="text" id="rsvp-names" name="names" autocomplete="name">
           </div>
           <div class="field">
             <label for="rsvp-email">Email</label>
-            <input type="email" id="rsvp-email" name="email" required autocomplete="email">
+            <input type="email" id="rsvp-email" name="email" autocomplete="email">
           </div>
-          <div class="field">
-            <label for="rsvp-roommate">Who are you sharing the 2 person room with? (name)</label>
-            <input type="text" id="rsvp-roommate" name="roommate" required autocomplete="off">
+          <fieldset class="field field-attend">
+            <legend>Will you be attending?</legend>
+            <label class="radio"><input type="radio" name="attending" value="yes"> <span>Yes</span></label>
+            <label class="radio"><input type="radio" name="attending" value="no"> <span>No, sorry</span></label>
+          </fieldset>
+          <div class="field field-partner" data-if-attending="yes" hidden>
+            <label for="rsvp-partner">Partner's name (if attending together)</label>
+            <input type="text" id="rsvp-partner" name="partner" autocomplete="off">
           </div>
-          <div class="field">
+          <div class="field field-room" data-if-attending="yes" hidden>
             <label for="rsvp-room">Room preference at Cocolia</label>
-            <select id="rsvp-room" name="room" required>
+            <select id="rsvp-room" name="room">
               <option value="">Choose a room…</option>
               <option value="Nature View">Nature View</option>
               <option value="Premium Nature">Premium Nature</option>
@@ -220,6 +225,10 @@
               <option value="Premium Horizon">Premium Horizon</option>
               <option value="Offsite / decide later">Offsite or decide later</option>
             </select>
+          </div>
+          <div class="field field-roommate" data-if-roommate hidden>
+            <label for="rsvp-roommate">Who are you sharing the room with?</label>
+            <input type="text" id="rsvp-roommate" name="roommate" autocomplete="off">
           </div>
           <div class="field">
             <label for="rsvp-notes">Dietary needs or anything else we should know</label>

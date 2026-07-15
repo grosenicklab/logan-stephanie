@@ -21,19 +21,30 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    const attending = String(body.attending || '').trim().toLowerCase();
     const room = String(body.room || '').trim();
     const names = String(body.names || '').trim();
     const email = String(body.email || '').trim();
+    const partner = String(body.partner || '').trim();
     const roommate = String(body.roommate || '').trim();
     const notes = String(body.notes || '').trim();
 
     if (!names || !email) {
       return respond({ ok: false, error: 'name and email required' });
     }
-    // Room-mate name is required when a real room is chosen.
-    const isRoomChoice = room && !/offsite/i.test(room);
-    if (isRoomChoice && !roommate) {
+    if (attending !== 'yes' && attending !== 'no') {
+      return respond({ ok: false, error: 'please indicate whether you can attend' });
+    }
+
+    // Only "attending: yes" submissions touch room inventory.
+    // A "no" is logged and returns immediately.
+    // A partner name means we don't need a separate roommate.
+    const isRoomChoice = attending === 'yes' && room && !/offsite/i.test(room);
+    if (isRoomChoice && !partner && !roommate) {
       return respond({ ok: false, error: 'please name who you\'re sharing the room with' });
+    }
+    if (attending === 'yes' && !room) {
+      return respond({ ok: false, error: 'please pick a room preference' });
     }
 
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -60,14 +71,20 @@ function doPost(e) {
       }
     }
 
+    // Trailing columns (attending, partner) appended so existing sheet
+    // layout isn't disrupted — reorganise the header row in the sheet
+    // to taste; row order here is:
+    //   date, names, email, room, roommate, notes, raw, attending, partner
     ss.getSheetByName(RSVP_SHEET).appendRow([
       new Date(),
       names,
       email,
-      room || '(none chosen)',
+      attending === 'yes' ? (room || '(none chosen)') : '(not attending)',
       roommate,
       notes,
-      JSON.stringify(body)
+      JSON.stringify(body),
+      attending,
+      partner
     ]);
 
     if (isRoomChoice) {
