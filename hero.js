@@ -803,4 +803,22 @@
   } else {
     requestAnimationFrame(tick);
   }
+
+  // ── autostart audio ───────────────────────────────────────────────
+  // Bring the ocean (and bird/chime) soundscape up on load rather than
+  // waiting for a click on the hero. Browser autoplay policies keep a
+  // fresh AudioContext suspended until a user gesture, so we (1) try to
+  // start immediately — works where autoplay is permitted — and (2) arm
+  // a one-time "first interaction anywhere" resume, so a scroll, tap, or
+  // keypress anywhere on the page starts the surf, not only a canvas click.
+  startAudio();
+  if (!audioCtx || audioCtx.state !== 'running') {
+    const GESTURES = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'];
+    const resumeOnce = () => {
+      startAudio();
+      if (audioCtx) audioCtx.resume();
+      GESTURES.forEach(ev => window.removeEventListener(ev, resumeOnce));
+    };
+    GESTURES.forEach(ev => window.addEventListener(ev, resumeOnce, { passive: true }));
+  }
 })();
