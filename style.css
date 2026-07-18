@@ -234,8 +234,12 @@ main {
    grid math exactly, using the same expressions the .section grid
    would produce for its 1fr media column. */
 .page-bottom {
-  width: 50vw;
+  display: flex;
+  width: 100%;
   min-height: clamp(24rem, 96vh, 96rem);
+}
+.page-bottom-left {
+  width: 50vw;
   box-sizing: border-box;
   background: linear-gradient(160deg, var(--band-c1, #B85B3F), var(--band-c2, #D4924E));
   animation: palette-breathe 35s linear infinite;
@@ -246,6 +250,14 @@ main {
      matching where a section image begins */
   padding-left: calc(max((100vw - 1280px) / 2, 0px) + clamp(1.5rem, 3vw, 3rem));
   padding-right: 0;
+}
+.page-bottom-right {
+  width: 50vw;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 5rem);
 }
 .page-bottom-media {
   /* Same width as a .section-media (1fr of the centered section grid):
@@ -266,13 +278,12 @@ main {
 .page-bottom-verse {
   font-family: "Nanum Myeongjo", serif;
   font-weight: 400;
-  color: var(--paper);
-  font-size: clamp(1.4rem, 2.4vw, 2.15rem);
-  line-height: 2;
+  color: var(--clay);
+  font-size: clamp(1.5rem, 2.6vw, 2.35rem);
+  line-height: 2.1;
   letter-spacing: 0.03em;
-  margin-top: clamp(2.25rem, 4vw, 3.5rem);
+  text-align: center;
   max-width: 24ch;
-  text-shadow: 0 1px 14px rgba(26, 22, 20, 0.18);
 }
 
 .section {
@@ -699,8 +710,12 @@ main {
   .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
   .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
   .page-bottom {
-    width: 100%;
+    flex-direction: column;
     min-height: 0;
+  }
+  .page-bottom-left,
+  .page-bottom-right {
+    width: 100%;
     padding: 2rem;
   }
   .page-bottom-media {
