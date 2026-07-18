@@ -260,7 +260,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(2rem, 5vw, 5rem);
+  padding: clamp(1.5rem, 3vw, 3rem);
 }
 .page-bottom-media {
   /* Same width as a .section-media (1fr of the centered section grid):
@@ -282,11 +282,11 @@ main {
   font-family: "Nanum Myeongjo", serif;
   font-weight: 400;
   color: var(--clay);
-  font-size: clamp(1.05rem, 1.7vw, 1.55rem);
+  font-size: clamp(0.95rem, 1.45vw, 1.35rem);
   line-height: 2.15;
   letter-spacing: 0.02em;
   text-align: center;
-  max-width: 30ch;
+  max-width: 30em;
   word-break: keep-all;
 }
 
