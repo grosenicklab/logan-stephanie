@@ -290,6 +290,16 @@ main {
   word-break: keep-all;
 }
 
+/* Korean bank-account note in the Registry section (for guests in Korea) */
+.registry-ko {
+  font-family: "Nanum Myeongjo", serif;
+  margin-top: 1.75rem;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+  word-break: keep-all;
+}
+
 .section {
   max-width: 1280px;
   margin: 0 auto;
