@@ -282,11 +282,12 @@ main {
   font-family: "Nanum Myeongjo", serif;
   font-weight: 400;
   color: var(--clay);
-  font-size: clamp(1.5rem, 2.6vw, 2.35rem);
-  line-height: 2.1;
-  letter-spacing: 0.03em;
+  font-size: clamp(1.05rem, 1.7vw, 1.55rem);
+  line-height: 2.15;
+  letter-spacing: 0.02em;
   text-align: center;
-  max-width: 24ch;
+  max-width: 30ch;
+  word-break: keep-all;
 }
 
 .section {
