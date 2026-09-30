@@ -167,23 +167,6 @@ a { color: inherit; }
 }
 
 
-/* Top-left stack: "Save the Date" with a discreet RSVP line under it.
-   Both read in the same tracked-uppercase register as the rest of the
-   hero corner labels. */
-.hero-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-.hero-rsvp {
-  font-family: var(--sans);
-  font-weight: 400;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
 .hero-nav {
   display: flex;
   gap: clamp(0.85rem, 2vw, 1.75rem);
