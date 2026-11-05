@@ -103,7 +103,7 @@ a { color: inherit; }
   gap: 1rem;
   flex-wrap: wrap;
 }
-/* top-align so "Save the Date" (top of the left stack) sits on the same
+/* top-align so "New Moon Wedding" (top of the left stack) sits on the same
    line as the single-line "Mazunte · Oaxaca · MX" label on the right */
 .hero-top { align-items: flex-start; }
 
