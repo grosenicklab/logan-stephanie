@@ -80,9 +80,9 @@
   const CREATURES = [
     { id: 'mermaid', lat: 15.6592, lng: -96.5650, size: 1.1 },  // off Mermejita
     { id: 'fish2',   lat: 15.6612, lng: -96.5525, size: 0.8 },  // off Mazunte
-    { id: 'octopus', lat: 15.6600, lng: -96.5440, size: 1.0 },  // off San Agustinillo
-    { id: 'fish',    lat: 15.6585, lng: -96.5275, size: 0.8 },  // off Zipolite
-    { id: 'clam',    lat: 15.6580, lng: -96.5225, size: 0.7 }   // off Zipolite
+    { id: 'fish',    lat: 15.6600, lng: -96.5440, size: 0.8 },  // off San Agustinillo
+    { id: 'octopus', lat: 15.6585, lng: -96.5280, size: 1.0 },  // off Zipolite
+    { id: 'clam',    lat: 15.6570, lng: -96.5165, size: 0.7 }   // off Zipolite
   ];
 
   // Basemap colors, from the palette in style.css.
@@ -159,8 +159,8 @@
     }))
   };
 
-  // The drawings are pre-rendered PNGs (images/sea/*.png, from her
-  // SVGs) at twice their display size, so they stay crisp on
+  // The drawings are pre-rendered PNGs (images/sea/*.png, 360px wide,
+  // from her SVGs) at twice their display size, so they stay crisp on
   // high-density screens and load the same way in every browser.
   async function loadCreature(id) {
     const res = await map.loadImage('images/sea/' + id + '.png');
