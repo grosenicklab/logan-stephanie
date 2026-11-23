@@ -73,13 +73,13 @@
   ];
 
   // Sea creatures drawn by Stephanie (from her Flying Seed map),
-  // scattered in the water off our stretch of coast.
+  // in the water off Mermejita, Mazunte, San Agustinillo and Zipolite.
   const CREATURES = [
-    { id: 'mermaid', lat: 15.6600, lng: -96.5700, size: 1.1 },
-    { id: 'octopus', lat: 15.6585, lng: -96.5455, size: 1.0 },
-    { id: 'fish',    lat: 15.6580, lng: -96.5320, size: 0.8 },
-    { id: 'fish2',   lat: 15.6555, lng: -96.5585, size: 0.8 },
-    { id: 'clam',    lat: 15.6575, lng: -96.5235, size: 0.7 }
+    { id: 'mermaid', lat: 15.6592, lng: -96.5650, size: 1.1 },  // off Mermejita
+    { id: 'fish2',   lat: 15.6612, lng: -96.5525, size: 0.8 },  // off Mazunte
+    { id: 'octopus', lat: 15.6600, lng: -96.5440, size: 1.0 },  // off San Agustinillo
+    { id: 'fish',    lat: 15.6585, lng: -96.5275, size: 0.8 },  // off Zipolite
+    { id: 'clam',    lat: 15.6580, lng: -96.5225, size: 0.7 }   // off Zipolite
   ];
 
   // Basemap colors, from the palette in style.css.
