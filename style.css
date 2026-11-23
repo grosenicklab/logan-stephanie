@@ -761,6 +761,8 @@ main {
     "list list"
     "back back";
 }
+/* The sticky section title would slide over the map, so it stays put here. */
+.map-section .section-head { position: static; }
 .map-frame { grid-area: map; position: relative; }
 .map-list  { grid-area: list; }
 .map-back  { grid-area: back; margin-top: 0; }

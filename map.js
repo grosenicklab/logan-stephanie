@@ -269,7 +269,7 @@
   // The "All" view frames the local places; the far-flung day trips
   // and airports come into frame through their own filters.
   const LOCAL = ['stay', 'eat', 'drink'];
-  const isNearby = p => LOCAL.includes(p.cat) || p.lng > -96.6;
+  const isNearby = p => LOCAL.includes(p.cat) || (p.cat !== 'travel' && p.lng > -96.6);
   let current = 'all';
 
   function applyFilter() {
