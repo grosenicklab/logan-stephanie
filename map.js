@@ -266,10 +266,10 @@
     addCreatures().catch(() => {});
   }
 
-  // The "All" view frames the local places; the far-flung day trips
-  // and airports come into frame through their own filters.
-  const LOCAL = ['stay', 'eat', 'drink'];
-  const isNearby = p => LOCAL.includes(p.cat) || (p.cat !== 'travel' && p.lng > -96.6);
+  // "3 Sisters" frames the coast from Mermejita to the far end of
+  // Zipolite; the far-flung day trips and airports come into frame
+  // through their own filters.
+  const COAST = [[-96.5715, 15.6565], [-96.5085, 15.6695]];
   let current = 'all';
 
   function applyFilter() {
@@ -284,10 +284,9 @@
   function show(cat, animate = true) {
     current = cat;
     applyFilter();
-    const visible = pinned.filter(p => inCat(p, cat));
-    const frame = cat === 'all' ? visible.filter(isNearby) : visible;
     const bounds = new maplibregl.LngLatBounds();
-    frame.forEach(p => bounds.extend([p.lng, p.lat]));
+    if (cat === 'all') COAST.forEach(c => bounds.extend(c));
+    else pinned.filter(p => inCat(p, cat)).forEach(p => bounds.extend([p.lng, p.lat]));
     map.fitBounds(bounds, { padding: 60, maxZoom: 16, duration: animate ? 800 : 0 });
     document.querySelectorAll('.map-filters button').forEach(b => {
       b.setAttribute('aria-pressed', String(b.dataset.cat === cat));
@@ -312,7 +311,7 @@
   const filters = document.querySelector('.map-filters');
   filters.innerHTML = ['all', 'stay', 'do', 'eat', 'drink', 'travel'].map(c =>
     '<button type="button" data-cat="' + c + '">' +
-    (c === 'all' ? 'All' : '<i style="background:' + CATS[c].color + '"></i>' + CATS[c].label) +
+    (c === 'all' ? '3 Sisters' : '<i style="background:' + CATS[c].color + '"></i>' + CATS[c].label) +
     '</button>'
   ).join('');
   filters.addEventListener('click', e => {
