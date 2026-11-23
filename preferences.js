@@ -26,6 +26,17 @@
   };
   boxes.forEach(b => b.addEventListener('change', syncActivities));
 
+  // The Cocolia answer opens meal times ("Yes") or restaurant picks
+  // ("No"); whichever is hidden has its inputs cleared.
+  const syncMeals = () => {
+    const r = form.querySelector('input[name="cocolia"]:checked');
+    form.querySelectorAll('[data-if-cocolia]').forEach(el => {
+      el.hidden = !r || r.value !== el.dataset.ifCocolia;
+      if (el.hidden) el.querySelectorAll('input').forEach(i => { i.checked = false; });
+    });
+  };
+  form.querySelectorAll('input[name="cocolia"]').forEach(r => r.addEventListener('change', syncMeals));
+
   const validate = () => {
     const names = form.querySelector('[name="names"]').value.trim();
     if (!names) return 'Please enter your name.';
@@ -65,6 +76,7 @@
         if (status) status.textContent = 'Thank you — got it! You can send this again any time if your plans change.';
         form.reset();
         syncActivities();
+        syncMeals();
       } else {
         if (status) status.textContent = 'Sorry — ' + ((res && res.error) || 'something went wrong. Please email us directly.');
       }

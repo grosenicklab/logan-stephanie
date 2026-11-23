@@ -132,7 +132,7 @@ function savePreferences(body) {
   let sheet = ss.getSheetByName(PREFS_SHEET);
   if (!sheet) {
     sheet = ss.insertSheet(PREFS_SHEET);
-    const header = ['Date', 'Names', 'Breakfast', 'Lunch', 'Dinner']
+    const header = ['Date', 'Names', 'Cocolia', 'Breakfast', 'Lunch', 'Dinner']
       .concat(ACTIVITIES, ['Notes']);
     sheet.getRange(1, 1, 1, header.length)
       .setValues([header])
@@ -149,10 +149,11 @@ function savePreferences(body) {
   sheet.appendRow([
     new Date(),
     names,
+    String(body.cocolia || ''),
     time(body.breakfast),
     time(body.lunch),
     time(body.dinner)
-  ].concat(ACTIVITIES.map(activity),[String(body.notes || '').trim()]));
+  ].concat(ACTIVITIES.map(activity), [String(body.notes || '').trim()]));
 
   return respond({ ok: true });
 }

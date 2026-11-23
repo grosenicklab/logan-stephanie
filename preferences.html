@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Itinerary &middot; Logan &amp; Stephanie</title>
+  <title>Food and Fun &middot; Logan &amp; Stephanie</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
@@ -15,19 +15,53 @@
   <main>
     <section class="section">
       <div class="section-head">
-        <h2>Itinerary</h2>
+        <h2>Food and Fun</h2>
       </div>
       <figure class="section-media">
         <img src="images/travel.jpg" alt="">
       </figure>
       <div class="section-body">
-        <p class="lead">We're so excited you're joining us! Because things around Mazunte are small and space is limited, please let us know your preferences for approximate dining times and which activities interest you most, so we can help coordinate.</p>
+        <p class="lead">We're so excited you're joining us! Because things around Mazunte are small and space can be limited, please let us know your preferences for approximate dining times and which activities interest you most, so we can help coordinate.</p>
         <form class="rsvp-form prefs-form" novalidate>
           <div class="field">
             <label for="prefs-names">Your name(s)</label>
             <input type="text" id="prefs-names" name="names" autocomplete="name">
           </div>
 
+          <fieldset class="field">
+            <legend>Are you staying at Cocolia?</legend>
+            <label class="radio"><input type="radio" name="cocolia" value="Yes"> <span>Yes</span></label>
+            <label class="radio"><input type="radio" name="cocolia" value="No"> <span>No</span></label>
+          </fieldset>
+
+          <div class="recs" data-if-cocolia="No" hidden>
+            <p class="meal-note">Everyone is welcome to eat at Cocolia, the hotel we have booked out for the wedding, but if you'd like to go your own way, here are some of our favorites:</p>
+            <dl>
+              <div>
+                <dt>Breakfast &amp; brunch</dt>
+                <dd>Icaro Cafe <span>(arrive early for the chocolatin)</span></dd>
+                <dd>Maralto</dd>
+                <dd>La Mora Posada <span>(San Agustinillo)</span></dd>
+                <dd>Orale Cafe <span>(Zipolite)</span></dd>
+              </div>
+              <div>
+                <dt>Lunch</dt>
+                <dd>Umami <span>(get the crispy bowl)</span></dd>
+                <dd>La Negra <span>(tacos and salsas)</span></dd>
+                <dd>La Ola <span>(ceviches and tostadas, on San Agustinillo beach)</span></dd>
+              </div>
+              <div>
+                <dt>Dinner</dt>
+                <dd>El Armadillo</dd>
+                <dd>Fafel el Loco</dd>
+                <dd>El Chiringuito <span>(get the octopus or solomio; on Mermejita Beach)</span></dd>
+                <dd>El Navegante <span>(San Agustinillo)</span></dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="meals" data-if-cocolia="Yes" hidden>
+          <p class="meal-note">Breakfast, lunch and dinner at Cacao, Cocolia's restaurant, are included with your room. Breakfast comes with coffee, tea, juice and seasonal agua fresca; soda and alcoholic drinks are extra. When would you prefer to eat (non-binding, just for planning)?</p>
           <fieldset class="field">
             <legend>Breakfast</legend>
             <label class="radio"><input type="radio" name="breakfast" value="8a"> <span>8a</span></label>
@@ -50,6 +84,7 @@
             <label class="radio"><input type="radio" name="dinner" value="9p"> <span>9p</span></label>
             <label class="radio"><input type="radio" name="dinner" value="Any"> <span>Any</span></label>
           </fieldset>
+          </div>
 
           <fieldset class="field field-activities">
             <legend>What would you like to do? Pick your top choices (some overlap, so choose your favorites)</legend>

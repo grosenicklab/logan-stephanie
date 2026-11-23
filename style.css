@@ -516,6 +516,45 @@ main {
   margin-bottom: 0.55rem;
   cursor: pointer;
 }
+/* Meal times, shown once a guest says they're staying at Cocolia. */
+.prefs-form .meals {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.prefs-form .meals[hidden],
+.prefs-form .recs[hidden] { display: none; }
+
+/* Restaurant picks for guests staying elsewhere. */
+.prefs-form .recs dl {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1.25rem 0 0;
+}
+.prefs-form .recs dt {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.4rem;
+}
+.prefs-form .recs dd {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--ink);
+}
+.prefs-form .recs dd span { font-size: 0.88rem; color: var(--ink-soft); }
+.prefs-form .meal-note {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
 /* Day choices under a ticked activity, indented to line up with its text. */
 .prefs-form .day-pick {
   display: flex;
