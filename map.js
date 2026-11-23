@@ -77,12 +77,13 @@
 
   // Sea creatures drawn by Stephanie (from her Flying Seed map),
   // in the water off Mermejita, Mazunte, San Agustinillo and Zipolite.
+  // Each drawing's size is baked into its PNG (see loadCreature).
   const CREATURES = [
-    { id: 'mermaid', lat: 15.6592, lng: -96.5650, size: 1.1 },  // off Mermejita
-    { id: 'fish2',   lat: 15.6612, lng: -96.5525, size: 0.8 },  // off Mazunte
-    { id: 'fish',    lat: 15.6600, lng: -96.5440, size: 0.8 },  // off San Agustinillo
-    { id: 'octopus', lat: 15.6585, lng: -96.5280, size: 1.0 },  // off Zipolite
-    { id: 'clam',    lat: 15.6570, lng: -96.5165, size: 0.7 }   // off Zipolite
+    { id: 'mermaid', lat: 15.6565, lng: -96.5665 },  // off Mermejita
+    { id: 'fish2',   lat: 15.6588, lng: -96.5525 },  // off Mazunte
+    { id: 'fish',    lat: 15.6578, lng: -96.5440 },  // off San Agustinillo
+    { id: 'octopus', lat: 15.6558, lng: -96.5285 },  // off Zipolite
+    { id: 'clam',    lat: 15.6548, lng: -96.5160 }   // off Zipolite
   ];
 
   // Basemap colors, from the palette in style.css.
@@ -159,9 +160,10 @@
     }))
   };
 
-  // The drawings are pre-rendered PNGs (images/sea/*.png, 360px wide,
-  // from her SVGs) at twice their display size, so they stay crisp on
-  // high-density screens and load the same way in every browser.
+  // The drawings are pre-rendered PNGs (images/sea/*.png, from her
+  // SVGs), cropped to the art and drawn at twice the size they appear
+  // in the default "3 Sisters" view (about zoom 14.5), so the map
+  // barely resamples them and her fine lines stay crisp.
   async function loadCreature(id) {
     const res = await map.loadImage('images/sea/' + id + '.png');
     return res.data;
@@ -178,7 +180,7 @@
         features: CREATURES.map(c => ({
           type: 'Feature',
           geometry: { type: 'Point', coordinates: [c.lng, c.lat] },
-          properties: { id: c.id, size: c.size }
+          properties: { id: c.id }
         }))
       }
     });
@@ -189,10 +191,7 @@
       minzoom: 11,
       layout: {
         'icon-image': ['get', 'id'],
-        'icon-size': ['interpolate', ['linear'], ['zoom'],
-          11, ['*', ['get', 'size'], 0.3],
-          14, ['*', ['get', 'size'], 0.75],
-          16, ['*', ['get', 'size'], 1.1]],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 11, 0.4, 14.5, 1, 16, 1.3],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true
       }
