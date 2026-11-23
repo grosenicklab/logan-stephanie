@@ -99,9 +99,9 @@ function doPost(e) {
 }
 
 /* Preferences tab — one row per submission from preferences.html.
-   Each activity gets its own column, filled when picked: with the
-   chosen day for activities offered on several days, "x" otherwise.
-   COUNTA down a column (less the header) gives the headcount. The
+   Each activity gets its own column holding 1 when picked, so a SUM
+   down a column gives the headcount. Days chosen for activities
+   offered on several days go together in the Day choices column. The
    tab and header row are created on the first submission; a later
    submission from the same guest is a newer row, not an update. */
 
@@ -117,7 +117,8 @@ const ACTIVITIES = [
   'Surf lessons',
   'Massage',
   'Yoga',
-  'Relax at the beach'
+  'Relax at the beach',
+  'Chill at the hotel'
 ];
 
 function savePreferences(body) {
@@ -133,7 +134,7 @@ function savePreferences(body) {
   if (!sheet) {
     sheet = ss.insertSheet(PREFS_SHEET);
     const header = ['Date', 'Names', 'Cocolia', 'Breakfast', 'Lunch', 'Dinner']
-      .concat(ACTIVITIES, ['Notes']);
+      .concat(ACTIVITIES, ['Day choices', 'Notes']);
     sheet.getRange(1, 1, 1, header.length)
       .setValues([header])
       .setFontWeight('bold')
@@ -141,10 +142,12 @@ function savePreferences(body) {
     sheet.setFrozenRows(1);
   }
 
-  // Leading apostrophe keeps "1p" as text instead of a time, and
-  // "8 Jan" as text instead of a date.
+  // Leading apostrophe keeps "1p" as text instead of a time.
   const time = v => v ? "'" + String(v) : '';
-  const activity = a => !picked.has(a) ? '' : (days[a] ? time(days[a]) : 'x');
+  const dayChoices = ACTIVITIES
+    .filter(a => picked.has(a) && days[a])
+    .map(a => a + ': ' + days[a])
+    .join('; ');
 
   sheet.appendRow([
     new Date(),
@@ -153,7 +156,7 @@ function savePreferences(body) {
     time(body.breakfast),
     time(body.lunch),
     time(body.dinner)
-  ].concat(ACTIVITIES.map(activity), [String(body.notes || '').trim()]));
+  ].concat(ACTIVITIES.map(a => picked.has(a) ? 1 : ''), [dayChoices, String(body.notes || '').trim()]));
 
   return respond({ ok: true });
 }
