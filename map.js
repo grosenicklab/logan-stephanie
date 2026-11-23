@@ -34,6 +34,8 @@
       note: 'Breakfast · San Agustinillo', q: 'La Mora Posada, San Agustinillo, Oaxaca' },
     { name: 'Órale Café', cat: 'eat', lat: 15.66494, lng: -96.52511,
       note: 'Breakfast · Zipolite', q: 'Órale Café, Zipolite, Oaxaca' },
+    { name: 'El Alquimista', cat: 'eat', also: 'drink', lat: 15.66355, lng: -96.52361,
+      note: 'Brunch and cocktails · on the beach in Zipolite', q: 'El Alquimista, Zipolite, Oaxaca' },
     { name: 'Umami', cat: 'eat', lat: 15.66567, lng: -96.54381,
       note: 'Lunch · get the crispy bowl', q: 'Umami, San Agustinillo, Oaxaca' },
     { name: 'La Negra', cat: 'eat', lat: null, lng: null,
@@ -41,7 +43,7 @@
     { name: 'La Ola', cat: 'eat', lat: 15.66634, lng: -96.54669,
       note: 'Lunch · ceviches and tostadas, on San Agustinillo beach', q: 'La Ola, San Agustinillo, Oaxaca' },
     { name: 'El Armadillo', cat: 'eat', lat: 15.66665, lng: -96.55612,
-      note: 'Dinner', q: 'El Armadillo, Mazunte, Oaxaca' },
+      note: 'Dinner · vegan', q: 'El Armadillo, Mazunte, Oaxaca' },
     { name: 'Falafel el Loco', cat: 'eat', lat: 15.66833, lng: -96.55697,
       note: 'Dinner', q: 'Falafel el Loco, Mazunte, Oaxaca' },
     { name: 'El Chiringuito', cat: 'eat', also: 'drink', lat: 15.66185, lng: -96.56012,
@@ -67,7 +69,8 @@
   ];
 
   const TOWNS = [
-    { name: 'Mazunte', lat: 15.6676, lng: -96.5537 },
+    // Set down on Mazunte beach, clear of the pins in the village.
+    { name: 'Mazunte', lat: 15.6658, lng: -96.5530 },
     { name: 'San Agustinillo', lat: 15.6661, lng: -96.5446 },
     { name: 'Zipolite', lat: 15.6642, lng: -96.5197 }
   ];
@@ -309,7 +312,7 @@
     if (!list) return;
     const order = ['stay', 'do', 'eat', 'drink', 'travel'].filter(c => cat === 'all' || c === cat);
     list.innerHTML = order.map(c => {
-      const items = PLACES.filter(p => p.cat === c || (p.also === c && cat === c));
+      const items = PLACES.filter(p => p.cat === c || p.also === c);
       return '<div><h3><i style="background:' + CATS[c].color + '"></i>' + CATS[c].label + '</h3><ul>' +
         items.map(p =>
           '<li><a href="' + gmaps(p.q) + '" target="_blank" rel="noopener">' + p.name + '</a>' +
