@@ -157,23 +157,33 @@
   };
 
   // SVGs are rasterized at twice their display size so they stay
-  // crisp on high-density screens.
+  // crisp on high-density screens. The drawings have a viewBox but no
+  // width/height, which some browsers then report as 0x0, so the
+  // proportions come from the viewBox itself.
   const CREATURE_PX = 120;
-  function loadCreature(id) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const w = CREATURE_PX * 2;
-        const h = Math.round(w * img.naturalHeight / img.naturalWidth);
-        const c = document.createElement('canvas');
-        c.width = w;
-        c.height = h;
-        c.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(c.getContext('2d').getImageData(0, 0, w, h));
-      };
-      img.onerror = reject;
-      img.src = 'images/sea/' + id + '.svg';
-    });
+  async function loadCreature(id) {
+    const text = await (await fetch('images/sea/' + id + '.svg')).text();
+    const vb = (text.match(/viewBox="([^"]+)"/) || [])[1];
+    const [, , vw, vh] = vb ? vb.split(/[\s,]+/).map(Number) : [0, 0, 1, 1];
+    const w = CREATURE_PX * 2;
+    const h = Math.round(w * vh / vw);
+    const sized = text.replace('<svg ', '<svg width="' + w + '" height="' + h + '" ');
+    const url = URL.createObjectURL(new Blob([sized], { type: 'image/svg+xml' }));
+    try {
+      const img = new Image(w, h);
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error('could not load ' + id));
+        img.src = url;
+      });
+      const c = document.createElement('canvas');
+      c.width = w;
+      c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      return c.getContext('2d').getImageData(0, 0, w, h);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
   }
 
   async function addCreatures() {
@@ -263,7 +273,7 @@
     map.on('mouseleave', 'places', () => { map.getCanvas().style.cursor = ''; });
 
     applyFilter();
-    addCreatures().catch(() => {});
+    addCreatures().catch(err => console.warn('Sea creatures not drawn:', err));
   }
 
   // "3 Sisters" frames the coast from Mermejita to the far end of
