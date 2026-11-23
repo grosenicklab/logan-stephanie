@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Map &middot; Logan &amp; Stephanie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main>
+    <section class="section map-section">
+      <div class="section-head">
+        <h2>Map</h2>
+      </div>
+      <div class="section-body">
+        <p class="lead">Our favorite places around Mazunte, San Agustinillo and Zipolite. Tap a pin for our notes and a link to directions in Google Maps.</p>
+      </div>
+      <div class="map-frame">
+        <div class="map-filters" role="group" aria-label="Show on map"></div>
+        <div id="map" aria-label="Map of our places around Mazunte"></div>
+      </div>
+      <div class="map-list"></div>
+      <p class="note map-back"><a href="index.html">&larr; Back to the invitation</a></p>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+  <script src="map.js"></script>
+</body>
+</html>

@@ -750,6 +750,128 @@ main {
   font-style: italic;
 }
 
+/* ─── map page ────────────────────────────────────────────── */
+
+/* Head and intro keep the usual grid; the map and the list below it
+   span the full section width. */
+.map-section {
+  grid-template-areas:
+    "head body"
+    "map  map"
+    "list list"
+    "back back";
+}
+.map-frame { grid-area: map; position: relative; }
+.map-list  { grid-area: list; }
+.map-back  { grid-area: back; margin-top: 0; }
+
+#map {
+  height: min(72vh, 680px);
+  border: 1px solid var(--rule);
+  background: var(--cream);
+  font-family: var(--sans);
+}
+
+.map-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.map-filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+.map-filters button:hover { border-color: var(--ink-soft); }
+.map-filters button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.map-filters i,
+.map-list h3 i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.map-card .maplibregl-popup-content {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: 0 6px 24px rgba(26, 22, 20, 0.15);
+  padding: 0.9rem 1rem;
+  font-family: var(--sans);
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.map-card.maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: var(--rule); }
+.map-card.maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: var(--rule); }
+.map-card-cat {
+  font-weight: 500;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.map-card-name { font-weight: 400; font-size: 1.05rem; color: var(--ink); }
+.map-card-note { font-size: 0.85rem; color: var(--ink-soft); }
+.map-card .map-card-link {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  align-self: flex-start;
+}
+.map-card .map-card-link:hover { border-color: currentColor; }
+
+.maplibregl-ctrl-group { border-radius: 0 !important; box-shadow: none !important; border: 1px solid var(--rule); }
+.maplibregl-ctrl-group button { background-color: var(--paper); }
+.maplibregl-ctrl-attrib { font-family: var(--sans); font-size: 0.6rem; }
+.maplibregl-cooperative-gesture-screen { font-family: var(--sans); background: rgba(26, 22, 20, 0.55); }
+
+.map-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 2rem 3rem;
+  font-family: var(--sans);
+}
+.map-list h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 0.75rem;
+}
+.map-list ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.map-list a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+.map-list a:hover { border-color: var(--ink); }
+.map-list li span { display: block; font-size: 0.85rem; color: var(--ink-soft); margin-top: 0.15rem; }
+
 /* ─── footer ──────────────────────────────────────────────── */
 
 .site-footer {
@@ -806,6 +928,15 @@ main {
     object-fit: contain;
   }
   .section-body { margin-left: 0; }
+  .map-section {
+    grid-template-areas:
+      "head"
+      "body"
+      "map"
+      "list"
+      "back";
+  }
+  #map { height: 65vh; }
   .section--band::before { display: none; }
   .section--band .section-head .section-num { color: var(--ink-soft); text-shadow: none; }
   .section--band .section-head h2 { color: var(--ink); text-shadow: none; }
