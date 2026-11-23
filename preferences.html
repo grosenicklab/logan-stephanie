@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Itinerary &middot; Logan &amp; Stephanie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main>
+    <section class="section">
+      <div class="section-head">
+        <h2>Itinerary</h2>
+      </div>
+      <figure class="section-media">
+        <img src="images/travel.jpg" alt="">
+      </figure>
+      <div class="section-body">
+        <p class="lead">We're so excited you're joining us! Because things around Mazunte are small and space is limited, please let us know your preferences for approximate dining times and which activities interest you most, so we can help coordinate.</p>
+        <form class="rsvp-form prefs-form" novalidate>
+          <div class="field">
+            <label for="prefs-names">Your name(s)</label>
+            <input type="text" id="prefs-names" name="names" autocomplete="name">
+          </div>
+
+          <fieldset class="field">
+            <legend>Breakfast</legend>
+            <label class="radio"><input type="radio" name="breakfast" value="8a"> <span>8a</span></label>
+            <label class="radio"><input type="radio" name="breakfast" value="9a"> <span>9a</span></label>
+            <label class="radio"><input type="radio" name="breakfast" value="10a"> <span>10a</span></label>
+            <label class="radio"><input type="radio" name="breakfast" value="Any"> <span>Any</span></label>
+          </fieldset>
+          <fieldset class="field">
+            <legend>Lunch</legend>
+            <label class="radio"><input type="radio" name="lunch" value="12p"> <span>12p</span></label>
+            <label class="radio"><input type="radio" name="lunch" value="1p"> <span>1p</span></label>
+            <label class="radio"><input type="radio" name="lunch" value="2p"> <span>2p</span></label>
+            <label class="radio"><input type="radio" name="lunch" value="Any"> <span>Any</span></label>
+          </fieldset>
+          <fieldset class="field">
+            <legend>Dinner</legend>
+            <label class="radio"><input type="radio" name="dinner" value="6p"> <span>6p</span></label>
+            <label class="radio"><input type="radio" name="dinner" value="7p"> <span>7p</span></label>
+            <label class="radio"><input type="radio" name="dinner" value="8p"> <span>8p</span></label>
+            <label class="radio"><input type="radio" name="dinner" value="9p"> <span>9p</span></label>
+            <label class="radio"><input type="radio" name="dinner" value="Any"> <span>Any</span></label>
+          </fieldset>
+
+          <fieldset class="field field-activities">
+            <legend>What would you like to do? Pick your top choices (some overlap, so choose your favorites)</legend>
+            <label class="check"><input type="checkbox" name="activities" value="Dolphin & whale boat"> <span>Dolphin &amp; whale watching boat<span class="desc">Humpback whales, spinner dolphins and sea turtles off the coast, highly recommended for those who can do boats</span><span class="when">Morning · 8, 9 or 10 Jan</span></span></label>
+            <div class="day-pick" data-day-for="Dolphin &amp; whale boat" hidden>
+              <label class="radio"><input type="radio" name="day:Dolphin &amp; whale boat" value="8 Jan"> <span>8 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Dolphin &amp; whale boat" value="9 Jan"> <span>9 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Dolphin &amp; whale boat" value="10 Jan"> <span>10 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Dolphin &amp; whale boat" value="Any day"> <span>Any day</span></label>
+            </div>
+            <label class="check"><input type="checkbox" name="activities" value="Bioluminescence tour"> <span>Bioluminescence tour<span class="desc">Boat ride through the mangroves of Laguna de Manialtepec, near Puerto Escondido, with time to swim in the glowing water</span><span class="when">Evening · 9 Jan · about 1½ hours from Mazunte</span></span></label>
+            <label class="check"><input type="checkbox" name="activities" value="Chacahua day trip"> <span>Day trip to Lagunas de Chacahua<span class="desc">Pristine mangrove lagoons, a bird sanctuary, and a remote beach village</span><span class="when">9 Jan · a major commitment: about 3 hours each way, leaving early</span></span></label>
+            <label class="check"><input type="checkbox" name="activities" value="Punta Cometa sunset hike"> <span>Sunset hike to Punta Cometa<span class="desc">A short walk out to the rocky headland at the southern tip of Oaxaca, where Logan proposed to Stephanie</span><span class="when">Sunset · 9 Jan</span></span></label>
+            <label class="check"><input type="checkbox" name="activities" value="Mezcal tasting"> <span>Mezcal tasting<span class="desc">Small-batch mezcal from Gota Gorda</span><span class="when">9 Jan</span></span></label>
+            <label class="check"><input type="checkbox" name="activities" value="Surf lessons"> <span>Surf lessons<span class="desc">Beginner-friendly waves in San Agustinillo's sheltered bay</span><span class="when">Mornings 8 and 9 Jan · afternoon and evening 9 Jan</span></span></label>
+            <div class="day-pick" data-day-for="Surf lessons" hidden>
+              <label class="radio"><input type="radio" name="day:Surf lessons" value="8 Jan morning"> <span>8 Jan morning</span></label>
+              <label class="radio"><input type="radio" name="day:Surf lessons" value="9 Jan morning"> <span>9 Jan morning</span></label>
+              <label class="radio"><input type="radio" name="day:Surf lessons" value="9 Jan afternoon"> <span>9 Jan afternoon</span></label>
+              <label class="radio"><input type="radio" name="day:Surf lessons" value="9 Jan evening"> <span>9 Jan evening</span></label>
+              <label class="radio"><input type="radio" name="day:Surf lessons" value="Any day"> <span>Any day</span></label>
+            </div>
+            <label class="check"><input type="checkbox" name="activities" value="Massage"> <span>Private massage<span class="desc">An hour with a local massage therapist</span><span class="when">1 hour · 8 or 9 Jan</span></span></label>
+            <div class="day-pick" data-day-for="Massage" hidden>
+              <label class="radio"><input type="radio" name="day:Massage" value="8 Jan"> <span>8 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Massage" value="9 Jan"> <span>9 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Massage" value="Any day"> <span>Any day</span></label>
+            </div>
+            <label class="check"><input type="checkbox" name="activities" value="Yoga"> <span>Yoga<span class="desc">Morning sessions</span><span class="when">Mornings · 8–10 Jan</span></span></label>
+            <div class="day-pick" data-day-for="Yoga" hidden>
+              <label class="radio"><input type="radio" name="day:Yoga" value="8 Jan"> <span>8 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Yoga" value="9 Jan"> <span>9 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Yoga" value="10 Jan"> <span>10 Jan</span></label>
+              <label class="radio"><input type="radio" name="day:Yoga" value="Every day"> <span>Every day</span></label>
+            </div>
+            <label class="check"><input type="checkbox" name="activities" value="Relax at the beach"> <span>Just relax at the beach<span class="desc">Self explanatory</span></span></label>
+          </fieldset>
+
+          <div class="field">
+            <label for="prefs-notes">Anything else? (who in your party wants what, other ideas)</label>
+            <textarea id="prefs-notes" name="notes" rows="3"></textarea>
+          </div>
+          <button type="submit">Send</button>
+          <p class="rsvp-status" aria-live="polite"></p>
+        </form>
+        <p class="note"><a href="index.html">&larr; Back to the invitation</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Random photo on each load, from the same pool as the main page.
+    (function () {
+      const pool = [
+        'schedule.jpg', 'stay.jpg', 'travel.jpg', 'wedding.jpg',
+        'extra-01.jpg', 'extra-04.jpg', 'extra-05.jpg', 'extra-06.jpg'
+      ];
+      const img = document.querySelector('.section-media img');
+      if (img) img.src = 'images/' + pool[Math.floor(Math.random() * pool.length)];
+    })();
+  </script>
+  <script src="preferences.js"></script>
+</body>
+</html>

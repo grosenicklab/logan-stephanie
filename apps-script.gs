@@ -21,6 +21,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (body.form === 'preferences') return savePreferences(body);
     const attending = String(body.attending || '').trim().toLowerCase();
     const room = String(body.room || '').trim();
     const names = String(body.names || '').trim();
@@ -95,6 +96,65 @@ function doPost(e) {
   } catch (err) {
     return respond({ ok: false, error: String(err) });
   }
+}
+
+/* Preferences tab — one row per submission from preferences.html.
+   Each activity gets its own column, filled when picked: with the
+   chosen day for activities offered on several days, "x" otherwise.
+   COUNTA down a column (less the header) gives the headcount. The
+   tab and header row are created on the first submission; a later
+   submission from the same guest is a newer row, not an update. */
+
+const PREFS_SHEET = 'Preferences';
+
+// Must match the checkbox values in preferences.html.
+const ACTIVITIES = [
+  'Dolphin & whale boat',
+  'Bioluminescence tour',
+  'Chacahua day trip',
+  'Punta Cometa sunset hike',
+  'Mezcal tasting',
+  'Surf lessons',
+  'Massage',
+  'Yoga',
+  'Relax at the beach'
+];
+
+function savePreferences(body) {
+  const names = String(body.names || '').trim();
+  if (!names) {
+    return respond({ ok: false, error: 'name required' });
+  }
+  const picked = new Set((Array.isArray(body.activities) ? body.activities : []).map(String));
+  const days = (body.days && typeof body.days === 'object') ? body.days : {};
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(PREFS_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(PREFS_SHEET);
+    const header = ['Date', 'Names', 'Breakfast', 'Lunch', 'Dinner']
+      .concat(ACTIVITIES, ['Notes']);
+    sheet.getRange(1, 1, 1, header.length)
+      .setValues([header])
+      .setFontWeight('bold')
+      .setBackground('#efefef');
+    sheet.setFrozenRows(1);
+  }
+
+  // Leading apostrophe keeps "1p" as text instead of a time, and
+  // "8 Jan" as text instead of a date.
+  const time = v => v ? "'" + String(v) : '';
+  const activity = a => !picked.has(a) ? '' : (days[a] ? time(days[a]) : 'x');
+
+  sheet.appendRow([
+    new Date(),
+    names,
+    time(body.breakfast),
+    time(body.lunch),
+    time(body.dinner)
+  ].concat(ACTIVITIES.map(activity),[String(body.notes || '').trim()]));
+
+  return respond({ ok: true });
 }
 
 function respond(obj) {

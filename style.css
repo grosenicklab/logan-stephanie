@@ -502,6 +502,58 @@ main {
   accent-color: var(--accent);
   cursor: pointer;
 }
+/* Activity checkboxes stack one per line; the input rule below would
+   otherwise flatten them into full-width underlines. */
+.rsvp-form label.check {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  margin-bottom: 0.55rem;
+  cursor: pointer;
+}
+/* Day choices under a ticked activity, indented to line up with its text. */
+.prefs-form .day-pick {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 0.4rem;
+  margin: -0.15rem 0 0.8rem 1.6rem;
+}
+.prefs-form .day-pick[hidden] { display: none; }
+.prefs-form .day-pick label.radio { font-size: 0.9rem; margin-right: 1.25rem; }
+.rsvp-form label.check .desc {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+  line-height: 1.4;
+}
+.rsvp-form label.check .when {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 0.15rem;
+}
+
+/* Meal times sit on one line, with visible radio dots. */
+.prefs-form fieldset.field:not(.field-activities) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 0.5rem;
+}
+.prefs-form label.radio input[type="radio"] {
+  -webkit-appearance: radio;
+  appearance: auto;
+  flex: none;
+  padding: 0;
+  border: none;
+}
+.rsvp-form .field-activities legend { line-height: 1.6; }
+
 .rsvp-form input,
 .rsvp-form select,
 .rsvp-form textarea {
@@ -519,6 +571,17 @@ main {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
+}
+.rsvp-form label.check input[type="checkbox"] {
+  -webkit-appearance: checkbox;
+  appearance: auto;
+  width: auto;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 .rsvp-form select {
   background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%),
