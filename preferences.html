@@ -13,16 +13,18 @@
 <body>
 
   <main>
+    <form class="prefs-form" novalidate>
     <section class="section">
       <div class="section-head">
-        <h2>Food and Fun</h2>
+        <span class="section-num">01</span>
+        <h2>Food</h2>
       </div>
       <figure class="section-media">
         <img src="images/travel.jpg" alt="">
       </figure>
       <div class="section-body">
         <p class="lead">We're so excited you're joining us! Because things around Mazunte are small and space can be limited, please let us know your preferences for approximate dining times and which activities interest you most, so we can help coordinate.</p>
-        <form class="rsvp-form prefs-form" novalidate>
+        <div class="rsvp-form">
           <div class="field">
             <label for="prefs-names">Your name(s)</label>
             <input type="text" id="prefs-names" name="names" autocomplete="name">
@@ -39,10 +41,10 @@
             <dl>
               <div>
                 <dt>Breakfast &amp; brunch</dt>
-                <dd>Icaro Cafe <span>(arrive early for the chocolatin)</span></dd>
-                <dd>Maralto</dd>
+                <dd>Ícaro Café <span>(arrive early for the chocolatín)</span></dd>
+                <dd>Maralto <span>(second-best chocolatín, besos de guayaba, chilaquiles)</span></dd>
                 <dd>La Mora Posada <span>(San Agustinillo)</span></dd>
-                <dd>Orale Cafe <span>(Zipolite)</span></dd>
+                <dd>Órale Café <span>(Zipolite)</span></dd>
               </div>
               <div>
                 <dt>Lunch</dt>
@@ -53,11 +55,21 @@
               <div>
                 <dt>Dinner</dt>
                 <dd>El Armadillo</dd>
-                <dd>Fafel el Loco</dd>
-                <dd>El Chiringuito <span>(get the octopus or solomio; on Mermejita Beach)</span></dd>
+                <dd>Falafel el Loco</dd>
+                <dd>El Chiringuito <span>(get the octopus or solomillo; on Mermejita Beach)</span></dd>
                 <dd>El Navegante <span>(San Agustinillo)</span></dd>
+                <dd>Arena Negra <span>(fish soup)</span></dd>
+                <dd>Cenzontle <span>(if you crave a burger)</span></dd>
+              </div>
+              <div>
+                <dt>Drinks</dt>
+                <dd>El Chiringuito <span>(Mermejita)</span></dd>
+                <dd>La Bodega</dd>
+                <dd>Kombuchería Bar el Pasatiempo <span>(San Agustinillo)</span></dd>
+                <dd>Mezcalería Gota Gorda <span>(Zipolite)</span></dd>
               </div>
             </dl>
+            <p class="meal-note recs-tip">As it is high season, you may want to check on reservations for any sit-down spots. Do not anticipate rapid service.</p>
           </div>
 
           <div class="meals" data-if-cocolia="Yes" hidden>
@@ -86,6 +98,20 @@
           </fieldset>
           </div>
 
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--band">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>Fun</h2>
+      </div>
+      <figure class="section-media">
+        <img src="images/wedding.jpg" alt="">
+      </figure>
+      <div class="section-body">
+        <div class="rsvp-form">
           <fieldset class="field field-activities">
             <legend>What would you like to do? Pick your top choices (some overlap, so choose your favorites)</legend>
             <label class="check"><input type="checkbox" name="activities" value="Dolphin & whale boat"> <span>Dolphin &amp; whale watching boat<span class="desc">Humpback whales, spinner dolphins and sea turtles off the coast, highly recommended for those who can do boats</span><span class="when">Morning · 8, 9 or 10 Jan</span></span></label>
@@ -120,7 +146,7 @@
               <label class="radio"><input type="radio" name="day:Yoga" value="10 Jan"> <span>10 Jan</span></label>
               <label class="radio"><input type="radio" name="day:Yoga" value="Every day"> <span>Every day</span></label>
             </div>
-            <label class="check"><input type="checkbox" name="activities" value="Relax at the beach"> <span>Just relax at the beach<span class="desc">Self explanatory</span></span></label>
+            <label class="check"><input type="checkbox" name="activities" value="Relax at the beach"> <span>Just relax at the beach<span class="desc">Self-explanatory</span></span></label>
           </fieldset>
 
           <div class="field">
@@ -129,21 +155,27 @@
           </div>
           <button type="submit">Send</button>
           <p class="rsvp-status" aria-live="polite"></p>
-        </form>
+        </div>
         <p class="note"><a href="index.html">&larr; Back to the invitation</a></p>
       </div>
     </section>
+    </form>
   </main>
 
   <script>
-    // Random photo on each load, from the same pool as the main page.
+    // A different random photo per section on each load, from the same
+    // pool as the main page.
     (function () {
       const pool = [
         'schedule.jpg', 'stay.jpg', 'travel.jpg', 'wedding.jpg',
         'extra-01.jpg', 'extra-04.jpg', 'extra-05.jpg', 'extra-06.jpg'
       ];
-      const img = document.querySelector('.section-media img');
-      if (img) img.src = 'images/' + pool[Math.floor(Math.random() * pool.length)];
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      document.querySelectorAll('.section-media img')
+        .forEach((img, i) => { img.src = 'images/' + pool[i % pool.length]; });
     })();
   </script>
   <script src="preferences.js"></script>
