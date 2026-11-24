@@ -162,10 +162,13 @@
 
   // The drawings are pre-rendered PNGs (images/sea/*.png, from her
   // SVGs), cropped to the art and drawn at twice the size they appear
-  // in the default "3 Sisters" view (about zoom 14.5), so the map
+  // in the default "3 Sisters" view (about zoom 13.4), so the map
   // barely resamples them and her fine lines stay crisp.
+  // Bump SEA_VERSION whenever the PNGs are re-rendered, so browsers
+  // don't keep showing cached copies.
+  const SEA_VERSION = 2;
   async function loadCreature(id) {
-    const res = await map.loadImage('images/sea/' + id + '.png');
+    const res = await map.loadImage('images/sea/' + id + '.png?v=' + SEA_VERSION);
     return res.data;
   }
 
@@ -191,7 +194,7 @@
       minzoom: 11,
       layout: {
         'icon-image': ['get', 'id'],
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 11, 0.4, 14.5, 1, 16, 1.3],
+        'icon-size': ['interpolate', ['linear'], ['zoom'], 11, 0.5, 13.4, 1, 16, 1.5],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true
       }
