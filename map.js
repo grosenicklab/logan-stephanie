@@ -80,10 +80,10 @@
   // Each drawing's size is baked into its PNG (see loadCreature).
   const CREATURES = [
     { id: 'mermaid', lat: 15.6565, lng: -96.5665 },  // off Mermejita
-    { id: 'fish2',   lat: 15.6558, lng: -96.5535 },  // off Mazunte
-    { id: 'fish',    lat: 15.6548, lng: -96.5420 },  // off San Agustinillo
+    { id: 'fish2',   lat: 15.6530, lng: -96.5535 },  // off Mazunte
+    { id: 'fish',    lat: 15.6568, lng: -96.5420 },  // off San Agustinillo
     { id: 'octopus', lat: 15.6558, lng: -96.5285 },  // off Zipolite
-    { id: 'clam',    lat: 15.6548, lng: -96.5160 }   // off Zipolite
+    { id: 'clam',    lat: 15.6568, lng: -96.5135 }   // off Zipolite
   ];
 
   // Basemap colors, from the palette in style.css.
