@@ -194,7 +194,11 @@
       minzoom: 11,
       layout: {
         'icon-image': ['get', 'id'],
-        'icon-size': ['interpolate', ['linear'], ['zoom'], 11, 0.5, 13.4, 1, 16, 1.5],
+        // Doubling per zoom level keeps each drawing the same size relative
+        // to the coastline on every screen, so a phone (which zooms out
+        // further to fit the coast) shows them smaller rather than piled
+        // onto the shore. Growth stops at 2x to keep them crisp.
+        'icon-size': ['interpolate', ['exponential', 2], ['zoom'], 10, 0.095, 13.4, 1, 14.4, 2],
         'icon-allow-overlap': true,
         'icon-ignore-placement': true
       }
@@ -210,12 +214,12 @@
       layout: {
         'text-field': ['get', 'name'],
         'text-font': ['Noto Sans Regular'],
-        'text-size': 11,
+        'text-size': ['interpolate', ['linear'], ['zoom'], 11, 9, 14, 11],
         'text-transform': 'uppercase',
         'text-letter-spacing': 0.24,
         'text-offset': [0, 1.4],
         'text-anchor': 'top',
-        'text-allow-overlap': true
+        'text-allow-overlap': false
       },
       paint: { 'text-color': '#4A423D', 'text-halo-color': PAL.halo, 'text-halo-width': 1.5 }
     });
@@ -280,7 +284,9 @@
     const bounds = new maplibregl.LngLatBounds();
     if (cat === 'all') COAST.forEach(c => bounds.extend(c));
     else pinned.filter(p => inCat(p, cat)).forEach(p => bounds.extend([p.lng, p.lat]));
-    map.fitBounds(bounds, { padding: 60, maxZoom: 16, duration: animate ? 800 : 0 });
+    // A 60px margin eats a third of a phone-width map; scale it down there.
+    const pad = Math.round(Math.min(60, map.getContainer().clientWidth * 0.05));
+    map.fitBounds(bounds, { padding: pad, maxZoom: 16, duration: animate ? 800 : 0 });
     document.querySelectorAll('.map-filters button').forEach(b => {
       b.setAttribute('aria-pressed', String(b.dataset.cat === cat));
     });
