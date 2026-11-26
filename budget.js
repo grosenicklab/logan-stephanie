@@ -3,7 +3,7 @@
 // All prices were read off the hotel's sites on 26 Nov 2026; the switches at
 // the top only change assumptions, and are remembered in this browser.
 
-const STORE_KEY = 'ls-wedding-audit-v1';
+const STORE_KEY = 'ls-wedding-audit-v2';
 const RESEARCH_FX = 19.37;   // MXN per USD used in the written audit
 const TAX = 1.19;            // 16% VAT + 3% lodging tax, excluded on both booking sites
 const NIGHTS = 3;
@@ -73,12 +73,12 @@ const OPTIONS = {
   rooms:     { label: 'Room benchmark', choices: [['direct', 'Cocolia 5–7 Jan'], ['booking', 'Booking.com 5–7 Jan'], ['pre', '11–13 Jan, before sale'], ['sale', '11–13 Jan, 40% sale']] },
   meals:     { label: 'Regular meals priced', choices: [['dish', 'Dish by dish'], ['plan', "Hotel's meal plans"]] },
   breakfast: { label: 'Breakfast in public rate', choices: [['no', 'No (booking page)'], ['yes', 'Yes (homepage)']] },
-  residents: { label: 'Residents', choices: [[56, '56 (agreement)'], [47, '47 (our roster)']] },
+  residents: { label: 'Residents', choices: [[47, '47 (confirmed)'], [56, '56 (full capacity)']] },
   guests:    { label: 'Reception guests', choices: [[65, '65'], [70, '70'], [80, '80 (hotel)']] },
   drinks:    { label: 'Drinks per guest', choices: [[0, 'None'], [2, '2'], [3.5, '3½'], [5, '5']] },
   fx:        { label: 'MXN per USD', choices: [['research', '19.37 (audit)'], ['live', 'Today']] }
 };
-const DEFAULTS = { rooms: 'direct', meals: 'dish', breakfast: 'no', residents: 56, guests: 70, drinks: 3.5, fx: 'research' };
+const DEFAULTS = { rooms: 'direct', meals: 'dish', breakfast: 'no', residents: 47, guests: 70, drinks: 3.5, fx: 'research' };
 
 let state = load();
 let liveFx = null;
