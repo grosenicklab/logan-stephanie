@@ -993,12 +993,13 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem 2rem;
-  align-items: flex-end;
+  align-items: flex-start;
   font-size: 0.85rem;
 }
 .budget-settings label { display: flex; flex-direction: column; gap: 0.3rem; }
-.budget-settings label.check { flex-direction: row; align-items: center; gap: 0.5rem; }
+.budget-settings label.check { flex-direction: row; align-items: center; gap: 0.5rem; align-self: center; }
 .budget-settings input[type="number"] { width: 7rem; }
+.budget-fx-note { font-size: 0.72rem; color: var(--ink-soft); min-height: 1em; }
 
 .budget input[type="text"],
 .budget input[type="number"],
@@ -1091,3 +1092,85 @@ main {
       "wide";
   }
 }
+
+/* Audit additions: assumption switches, type tags, verdict line. */
+.budget-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem 2rem;
+  margin-bottom: 2rem;
+}
+.budget-control { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+.budget-control > span {
+  width: 100%;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.budget-control button {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid var(--rule);
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+.budget-control button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.budget-table td.how { color: var(--ink-soft); font-size: 0.84rem; white-space: normal; min-width: 14rem; }
+.budget-table tr.group-start td { border-top: 1px solid var(--ink-soft); }
+.budget-gap { margin-top: 2rem; }
+.tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+}
+.tag-quote  { border-color: var(--ink); color: var(--ink); }
+.tag-public { border-color: var(--p-ocean); color: var(--p-ocean); }
+.tag-open   { border-color: var(--accent); color: var(--accent); }
+.budget-verdict { font-size: 1.05rem; line-height: 1.5; color: var(--ink); padding-left: 1rem; border-left: 3px solid var(--rule); }
+.budget-verdict.better { border-color: var(--p-ocean); }
+.budget-verdict.worse  { border-color: var(--accent); }
+.budget-table tfoot tr.better td.num { color: var(--p-ocean); }
+.budget-table tfoot tr.worse td.num  { color: var(--accent); }
+.budget-list { padding-left: 1.2rem; display: grid; gap: 0.75rem; line-height: 1.5; }
+.budget-h3 {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 2.5rem 0 0.75rem;
+}
+.budget-sources { padding-left: 1.2rem; display: grid; gap: 0.5rem; font-size: 0.92rem; line-height: 1.5; }
+.budget-section .section-body p + p { margin-top: 1rem; }
+.budget-table td.better { color: var(--p-ocean); }
+.budget-table td.worse  { color: var(--accent); }
+.budget-chart svg { width: 100%; height: auto; display: block; font-family: var(--sans); }
+.c-grid { stroke: var(--rule); stroke-width: 0.5; }
+.c-axis { font-size: 10px; fill: var(--ink-soft); }
+.c-label { font-size: 10px; fill: var(--accent); letter-spacing: 0.1em; }
+.c-wedding { fill: var(--accent); opacity: 0.1; }
+.c-direct  { fill: none; stroke: var(--ink); stroke-width: 1.6; }
+.c-booking { fill: none; stroke: var(--p-ocean); stroke-width: 1.6; }
+.c-direct-dot  { fill: var(--ink); }
+.c-booking-dot { fill: var(--p-ocean); }
+.c-resell  { fill: var(--p-amber); opacity: 0.55; }
+.c-package { stroke: var(--accent); stroke-width: 3; }
+.c-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.75rem; font-size: 0.84rem; color: var(--ink-soft); }
+.c-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.c-legend i { display: inline-block; width: 18px; height: 3px; }
+.c-direct-key  { background: var(--ink); }
+.c-booking-key { background: var(--p-ocean); }
+.c-resell-key  { background: var(--p-amber); height: 10px !important; opacity: 0.55; }
+.c-package-key { background: var(--accent); }
+.c-package-ref { stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.c-package-pretax { opacity: 0.5; }
+.c-label-soft { opacity: 0.7; }

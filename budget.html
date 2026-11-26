@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
 
@@ -16,15 +16,49 @@
     <section class="section budget-section">
       <div class="section-head">
         <span class="section-num">01</span>
+        <h2>Verdict</h2>
+      </div>
+      <div class="section-body">
+        <p class="lead">Is Cocolia's $46,372 buyout for 7–10 Jan 2027 fair? Below, the package is set against what the same rooms, meals, gala and drinks cost at Cocolia's own public prices. Change the assumptions to see how the answer moves.</p>
+        <p class="budget-verdict" id="verdict"></p>
+      </div>
+      <div class="budget-wide">
+        <div class="budget-controls" id="controls"></div>
+        <div class="budget-scroll">
+          <table class="budget-table" id="summary">
+            <thead>
+              <tr><th>Item</th><th class="num">We're charged</th><th class="num">Retail equivalent</th><th class="num">Difference</th><th>How the retail figure is calculated</th><th>Type</th></tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+        <h3 class="budget-h3">Per guest, per day</h3>
+        <div class="budget-scroll">
+          <table class="budget-table" id="perday">
+            <thead>
+              <tr><th>Retail, per resident guest</th><th class="num">Thu 7</th><th class="num">Fri 8</th><th class="num">Sat 9</th><th class="num">Sun 10</th><th class="num">Stay</th><th class="num">Per night</th></tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+        <p class="note">Room: our room mix at the chosen benchmark, split across the residents. Meals follow the method chosen above. The package is priced per bungalow; here it is divided by the residents, so it also covers the reception guests who are not staying.</p>
+        <div class="budget-actions">
+          <button type="button" id="b-copy">Copy table</button>
+          <span class="budget-status" aria-live="polite"></span>
+        </div>
+        <p class="note">* The agreement lists dinner (80) and cocktail as “TBA” at $0.00 (p. 1); we understand both are included in the $46,372. The bungalow prices are the only items the agreement prices, so meals, gala and drinks are bundled into them. Types: <b>Quote</b> from the agreement · <b>Public</b> a published price · <b>Model</b> published prices × an assumed quantity · <b>Open</b> not specified in writing. Checked 26 Nov 2026.</p>
+      </div>
+    </section>
+
+    <section class="section budget-section">
+      <div class="section-head">
+        <span class="section-num">02</span>
         <h2>Rooms</h2>
       </div>
       <div class="section-body">
-        <p class="lead">The buyout contract against the rates anyone can book on Cocolia's site. Enter the contract price per person (USD, whole stay); everything you type stays in this browser only.</p>
-        <div class="budget-settings">
-          <label>Nights <input type="number" id="b-nights" min="1" step="1" inputmode="numeric"></label>
-          <label>MXN per USD <input type="number" id="b-fx" min="1" step="0.01" inputmode="decimal"></label>
-          <label class="check"><input type="checkbox" id="b-tax"> <span>Add IVA 16% + lodging tax 3%</span></label>
-        </div>
+        <p class="lead">Our 28 bungalows for three nights, priced at Cocolia's public rates for the nearest open dates, 5–7 Jan 2027 (7–9 Jan show as full). Rates are room only, with 16% VAT and 3% lodging tax added, as both booking sites show them excluded.</p>
       </div>
       <div class="budget-wide">
         <div class="budget-scroll">
@@ -33,60 +67,105 @@
               <tr>
                 <th>Room type</th>
                 <th class="num">Rooms</th>
-                <th class="num">Public / night</th>
-                <th class="num">Sale / night</th>
-                <th class="num">Contract, USD / person</th>
-                <th class="num">= per room / night</th>
-                <th class="num">vs sale</th>
+                <th class="num">Cocolia, MXN / night</th>
+                <th class="num">Booking.com, USD / 2 nights</th>
+                <th class="num">11–13 Jan, MXN / night</th>
+                <th class="num">Retail, 3 nights + tax</th>
+                <th class="num">Our quote, per bungalow</th>
+                <th class="num">Retail × rooms</th>
+                <th class="num">Quote × rooms</th>
               </tr>
             </thead>
             <tbody></tbody>
             <tfoot></tfoot>
           </table>
         </div>
-        <p class="note">Public and sale rates: Cocolia website, 25 Nov 2026, for 11–13 Jan 2027, two guests, members' 40% Black Friday price, before tax, room only, converted from pesos at the rate above. The contract includes full board for two, so the gap is roughly what the meals cost.</p>
+        <h3 class="budget-h3">Nightly rates, 1 Dec – 1 Feb</h3>
+        <div class="budget-chart" id="chart"></div>
+        <p class="note">Standard Nature View bungalow, two adults, one-night stays, before 16% VAT and 3% lodging tax. Cocolia: its booking calendar's full public rate, converted at the rate chosen above. Booking.com: the lowest price shown for that night, which carries the 40% sale on most dates outside 19 Dec – 10 Jan; gaps mean the room was sold out or the hotel was full (7–9 Jan is our buyout). Google Hotels listed resellers at $238–286 a night for 5–7 Jan (Tripadvisor, Vio.com, Traveluro, ZenHotels, Wego and others; room type not shown) and Booking.com at $315; the nearby five-star Zoa Hotel was $577. Our package line is a Nature View bungalow's share of the quote, $1,482 ÷ 3 nights, which also covers meals, gala and bar. All checked 26 Nov 2026.</p>
+        <p class="note">Formula: MXN nightly rate × 1.19 ÷ FX × 3 × rooms; the “Retail” columns follow the room benchmark chosen in the Verdict section. The quote is USD per person for the stay × 2 (agreement p. 1). Booking.com's prices imply 19.70–19.72 MXN per USD in every category, so its peso prices match Cocolia's own; its “Water Front” and “Beach Front” are matched to Horizon and Premium Horizon on that basis. 11–13 Jan: crossed-out price before the 40% sale, which applies only to the prepaid, non-refundable rate. Ocean View (MXN 8,136) is not in our block.</p>
       </div>
     </section>
 
     <section class="section budget-section">
       <div class="section-head">
-        <span class="section-num">02</span>
-        <h2>Quotes</h2>
+        <span class="section-num">03</span>
+        <h2>Meals</h2>
       </div>
       <div class="section-body">
-        <p class="lead">Everything else, side by side. Put competing quotes for the same thing in one row, pick the one you're going with, and track what's been paid.</p>
+        <p class="lead">Each regular meal on the hotel's menu proposal, matched to the closest dish on Cacao's current menu. Prices include 16% VAT and exclude the 15% tip the menu suggests.</p>
       </div>
       <div class="budget-wide">
         <div class="budget-scroll">
-          <table class="budget-table" id="items">
+          <table class="budget-table" id="meals">
             <thead>
-              <tr>
-                <th>Item</th>
-                <th>Cur.</th>
-                <th class="num">Option A</th>
-                <th class="num">Option B</th>
-                <th class="num">Option C</th>
-                <th>Going with</th>
-                <th class="num">Paid</th>
-                <th class="num">Still owed</th>
-                <th aria-label="Remove"></th>
-              </tr>
+              <tr><th>Meal</th><th>On the group menu</th><th>Closest Cacao dish</th><th>Match</th><th class="num">MXN</th><th class="num">Per guest</th><th class="num">× residents</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="note">Match: <b>exact</b> same dish · <b>sub</b> closest substitute · <b>½</b> half portion assumed. Coffee, juice and aguas frescas are not valued (about +$2,255 if they were). Cross-check with the hotel's own meal plans on the 5–7 Jan booking page: breakfast +MXN 490 and half board +MXN 1,184 per bungalow per night before tax, so the second meal is MXN 694; which meal it covers is not stated. Sources: <a href="https://www.cocoliahotel.com/docs/Menu_Cacao_Cocolia_Hotel_2026_OK.pdf">Cacao menu 2026</a> (linked from the homepage; the older <a href="https://www.cocoliahotel.com/docs/MenuCacao-Cocolia-Hotel.pdf">July 2025 edition</a> is 12–24% cheaper) and the day-by-day menu proposal pp. 1–3.</p>
+      </div>
+    </section>
+
+    <section class="section budget-section">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2>Reception</h2>
+      </div>
+      <div class="section-body">
+        <p class="lead">The four-course gala on 8 Jan replaces that night's regular dinner, followed by the mezcalería cocktail party. Both are in our package as we understand it, but appear in the agreement as “TBA” at $0.00.</p>
+      </div>
+      <div class="budget-wide">
+        <div class="budget-scroll">
+          <table class="budget-table" id="gala">
+            <thead>
+              <tr><th>Course</th><th>On the gala menu</th><th>Closest Cacao dish</th><th>Match</th><th class="num">MXN</th></tr>
             </thead>
             <tbody></tbody>
             <tfoot></tfoot>
           </table>
         </div>
-        <div class="budget-actions">
-          <button type="button" id="b-add">Add a row</button>
-          <button type="button" id="b-copy">Copy for Sheets</button>
-          <button type="button" id="b-clear">Start over</button>
-          <span class="budget-status" aria-live="polite"></span>
+        <div class="budget-scroll budget-gap">
+          <table class="budget-table" id="drinks">
+            <thead>
+              <tr><th>Drink</th><th>On the party menu</th><th class="num">Cacao / Mezcalería, MXN</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
+        <p class="note">How many drinks guests have is an assumption (set it in the Verdict section), priced at an average MXN 242 per drink. Cocolia's own four-course holiday dinners cost MXN 2,100–2,300 per person. Cross-check: <a href="https://www.coralbluehuatulco.mx/weddings">Coral Blue Huatulco</a> charges MXN 2,100 per adult for a three-course banquet with four hours of domestic open bar (“restrictions apply”; plus IVA if an invoice is needed), about <span id="coral"></span> for our reception. That is an alternative to the gala + drinks lines, not an addition. Sources: <a href="https://www.cocoliahotel.com/docs/Menu_Mezcleria_Cocolia_Hotel_2026.pdf">Mezcalería menu 2026</a>, menu proposal pp. 1–2.</p>
+      </div>
+    </section>
+
+    <section class="section budget-section">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <h2>To confirm</h2>
+      </div>
+      <div class="section-body">
+        <ol class="budget-list">
+          <li><b>Tax.</b> The VAT 16% and city tax 3% lines show dashes (agreement p. 1). Cocolia's booking policy says rates include taxes; its terms say 19% is paid at check-out. If added, the package is $55,183.</li>
+          <li><b>Gala and cocktail party.</b> Written as “TBA, $0.00” for 80 dinner guests (p. 1). Get in writing that both are included, for how many guests (we expect 65–70), which drinks, and for how long.</li>
+          <li><b>Tips and service.</b> The service-charge line is blank, but tips on food and drink are mandatory under the union (p. 2 §4); no percentage is given. At 15% of the modelled food and drink that is roughly $1,900–2,700.</li>
+          <li><b>Breakfast.</b> The homepage says breakfast is included when booking direct; the 5–7 Jan booking page sells the same rate as “Accommodation only” with breakfast extra. Toggle it in the Verdict section.</li>
+          <li><b>Residents.</b> The agreement implies 56 (28 bungalows × 2), but our roster has about 47 adults in rooms, plus two small children in a hotel that is adults only (16+). The price is per bungalow either way.</li>
+          <li><b>Ocean View.</b> The block has 0 Ocean View bungalows, yet the hotel sells them. Check that the buyout is truly exclusive.</li>
+          <li><b>Paperwork.</b> Payment dates say 1/10/2025 and 1/12/2025 and the signing deadline 9 July 2025 (p. 3); the bank account is in pesos with no exchange rate stated. The three deposits add up to the $46,372 total.</li>
+        </ol>
+        <h3 class="budget-h3">Group-price context</h3>
+        <p>The hotel is currently selling our same room mix for 11–13 Jan at <span id="sale"></span> including tax with the 40% sale (prepaid, non-refundable; on <a href="https://owniacollection.com/offers/">Ownia</a>: book 13–30 Nov, stays to 20 Dec 2027, no blackout published, though 5–7 Jan shows no discount). A buyout listing that is very likely Cocolia, <a href="https://www.rent-a-resort.com/en/property/jungle-retreat-oaxaca-coast/">“Jungle Retreat Oaxaca Coast”, 28 rooms</a>, quotes from $7,400 a night with half board, about $22,200 for three nights (single occupancy; dates and tax not stated). So the package looks fair against retail prices, but the hotel can clearly sell for less.</p>
+        <h3 class="budget-h3">Sources</h3>
+        <ul class="budget-sources">
+          <li>Buyout agreement (BUYOUT_LOGAN.pdf) pp. 1–3; day-by-day menu proposal (Menu_Day_by_Day_Cocolia_EN.pdf) pp. 1–3.</li>
+          <li><a href="https://reservations.cocoliahotel.com/en/hotel/cocoliahotel?datein=05-01-2027&amp;dateout=07-01-2027">Cocolia direct, 5–7 Jan 2027</a> · <a href="https://www.booking.com/hotel/mx/coco.html?checkin=2027-01-05&amp;checkout=2027-01-07&amp;group_adults=2&amp;no_rooms=1&amp;selected_currency=USD">Booking.com, 5–7 Jan 2027</a> (non-refundable, room only, taxes excluded) · <a href="https://reservations.cocoliahotel.com/en/hotel/cocoliahotel?datein=11-01-2027&amp;dateout=13-01-2027">Cocolia direct, 11–13 Jan 2027</a>.</li>
+          <li><a href="https://www.cocoliahotel.com/en/">Cocolia homepage</a> (“breakfast included”) · <a href="https://www.cocoliahotel.com/politica-de-reserva.php">booking policy</a> · <a href="https://www.hotelesdemazunte.com/hotelcocolia.html">Hoteles de Mazunte</a> ($190 low / $320 high season, double, 2026; room and tax unspecified).</li>
+        </ul>
         <p class="note"><a href="index.html">&larr; Back to the invitation</a></p>
       </div>
     </section>
   </main>
 
-  <script src="budget.js?v=3"></script>
+  <script src="budget.js?v=7"></script>
 </body>
 </html>
