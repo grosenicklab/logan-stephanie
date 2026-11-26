@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Budget &middot; Logan &amp; Stephanie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=8">
+</head>
+<body>
+
+  <main class="budget">
+    <section class="section budget-section">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2>Rooms</h2>
+      </div>
+      <div class="section-body">
+        <p class="lead">The buyout contract against the rates anyone can book on Cocolia's site. Enter the contract price per person (USD, whole stay); everything you type stays in this browser only.</p>
+        <div class="budget-settings">
+          <label>Nights <input type="number" id="b-nights" min="1" step="1" inputmode="numeric"></label>
+          <label>MXN per USD <input type="number" id="b-fx" min="1" step="0.01" inputmode="decimal"></label>
+          <label class="check"><input type="checkbox" id="b-tax"> <span>Add IVA 16% + lodging tax 3%</span></label>
+        </div>
+      </div>
+      <div class="budget-wide">
+        <div class="budget-scroll">
+          <table class="budget-table" id="rooms">
+            <thead>
+              <tr>
+                <th>Room type</th>
+                <th class="num">Rooms</th>
+                <th class="num">Public / night</th>
+                <th class="num">Sale / night</th>
+                <th class="num">Contract, USD / person</th>
+                <th class="num">= per room / night</th>
+                <th class="num">vs sale</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+        <p class="note">Public and sale rates: Cocolia website, 25 Nov 2026, for 11–13 Jan 2027, two guests, members' 40% Black Friday price, before tax, room only. The contract includes full board for two, so the gap is roughly what the meals cost.</p>
+      </div>
+    </section>
+
+    <section class="section budget-section">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>Quotes</h2>
+      </div>
+      <div class="section-body">
+        <p class="lead">Everything else, side by side. Put competing quotes for the same thing in one row, pick the one you're going with, and track what's been paid.</p>
+      </div>
+      <div class="budget-wide">
+        <div class="budget-scroll">
+          <table class="budget-table" id="items">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Cur.</th>
+                <th class="num">Option A</th>
+                <th class="num">Option B</th>
+                <th class="num">Option C</th>
+                <th>Going with</th>
+                <th class="num">Paid</th>
+                <th class="num">Still owed</th>
+                <th aria-label="Remove"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+        <div class="budget-actions">
+          <button type="button" id="b-add">Add a row</button>
+          <button type="button" id="b-copy">Copy for Sheets</button>
+          <button type="button" id="b-clear">Start over</button>
+          <span class="budget-status" aria-live="polite"></span>
+        </div>
+        <p class="note"><a href="index.html">&larr; Back to the invitation</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="budget.js?v=2"></script>
+</body>
+</html>
