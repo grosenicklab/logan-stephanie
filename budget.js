@@ -57,12 +57,12 @@ const GALA = [
 ];
 const GALA_MXN = GALA.reduce((s, g) => s + g[4], 0);
 const DRINKS = [
-  ['House cocktails', 'Mezcalitas, margaritas, cuba libre', '240'],
-  ['Mezcal tasting', 'Espadín, tobalá, tepeztate', '270 / 350 / 350'],
-  ['House wine', 'White and red', 'not listed'],
-  ['Mocktail', 'Hibiscus-rosemary tonic', '130 (kombucha)'],
-  ['Hot drinks', 'Café de olla, infusions', '110 (cacao drinks)'],
-  ['Average used', '', '242']
+  ['House cocktails', 'Mezcalitas, margaritas, cuba libre', [240]],
+  ['Mezcal tasting', 'Espadín, tobalá, tepeztate', [270, 350, 350]],
+  ['House wine', 'White and red', null, 'not listed'],
+  ['Mocktail', 'Hibiscus-rosemary tonic', [130], 'kombucha'],
+  ['Hot drinks', 'Café de olla, infusions', [110], 'cacao drinks'],
+  ['Average used', '', [242]]
 ];
 const DRINK_MXN = 242;
 // Hotel meal plans on the 5–7 Jan booking page, MXN per bungalow per night before tax.
@@ -96,7 +96,8 @@ function save() {
 
 const fx = () => state.fx === 'live' && liveFx ? liveFx : RESEARCH_FX;
 const usd = n => (n < 0 ? '−$' : '$') + Math.round(Math.abs(n)).toLocaleString('en-US');
-const mxn = n => n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+// Menu prices are in pesos; tables show them in dollars to the cent.
+const usd2 = mxnPrice => '$' + (mxnPrice / fx()).toFixed(2);
 
 function el(tag, attrs, ...kids) {
   const e = document.createElement(tag);
@@ -164,33 +165,33 @@ const BENCH = {
 // Side by side: what the agreement charges (it prices only the bungalows;
 // everything else is bundled in) against the retail cost of each part.
 function renderSummary(c) {
-  const f = fx().toFixed(2);
   const diffCell = (charged, retail) => {
     if (typeof charged !== 'number' || retail == null) return el('td', { class: 'num' });
     const d = charged - retail;
     return el('td', { class: 'num ' + (d > 0 ? 'worse' : 'better') }, (d > 0 ? '+' : '') + usd(d));
   };
+  // The difference column is per bungalow, so room types of different counts compare.
   const rows = ROOMS.map(r => [
     `${r.type} × ${r.count}`, r.quote * 2 * r.count, roomRetail(r) * r.count,
     `${BENCH[state.rooms]}, room only, + 19% tax, × 3 nights`, 'Public']);
   const bundled = 'Included';
   rows.push(
     ['3 breakfasts', bundled, c.breakfasts, state.breakfast === 'yes' ? 'Counted as already in the room rate'
-      : state.meals === 'plan' ? `MXN 490 × 1.19 ÷ ${f} × 28 bungalows × 3` : `Cacao dishes × ${c.res} residents`, 'Model'],
+      : state.meals === 'plan' ? `${usd2(BREAKFAST_PLAN * TAX)} per bungalow-night with tax × 28 bungalows × 3` : `Cacao dishes × ${c.res} residents`, 'Model'],
     ['2 lunches', bundled, c.lunches, `Cacao dishes × ${c.res} residents`, 'Model'],
-    ['2 regular dinners', bundled, c.dinners, state.meals === 'plan' ? `MXN 694 × 1.19 ÷ ${f} × 28 bungalows × 2` : `Cacao dishes × ${c.res} residents`, 'Model'],
-    [`Gala dinner, ${c.guests} guests`, 'TBA, $0 *', c.gala, `MXN ${GALA_MXN.toLocaleString('en-US')} × ${c.guests} ÷ ${f}`, 'Model'],
-    [`Cocktail party, ${c.guests} guests`, 'TBA, $0 *', c.drinks, `${state.drinks} drinks × MXN ${DRINK_MXN} × ${c.guests} ÷ ${f}`, 'Model'],
+    ['2 regular dinners', bundled, c.dinners, state.meals === 'plan' ? `${usd2(SECOND_MEAL_PLAN * TAX)} per bungalow-night with tax × 28 bungalows × 2` : `Cacao dishes × ${c.res} residents`, 'Model'],
+    [`Gala dinner, ${c.guests} guests`, 'TBA, $0 *', c.gala, `${usd2(GALA_MXN)} per guest × ${c.guests}`, 'Model'],
+    [`Cocktail party, ${c.guests} guests`, 'TBA, $0 *', c.drinks, `${state.drinks} drinks × ${usd2(DRINK_MXN)} × ${c.guests}`, 'Model'],
     ['VAT 16% + city tax 3%', 'Included', null, 'In the retail room rates above; Cacao prices include VAT', 'Quote'],
     ['Service charge, F&B tips', 'Mandatory, % not given', null, 'Not included (Cacao suggests 15%)', 'Open']
   );
   const body = document.querySelector('#summary tbody');
   body.textContent = '';
-  rows.forEach(([item, charged, retail, how, type]) => body.append(el('tr', {},
+  rows.forEach(([item, charged, retail, how, type], i) => body.append(el('tr', {},
     el('td', {}, item),
     el('td', { class: 'num' }, typeof charged === 'number' ? usd(charged) : charged),
     el('td', { class: 'num' }, retail == null ? '–' : usd(retail)),
-    diffCell(charged, retail),
+    i < ROOMS.length ? diffCell(charged / ROOMS[i].count, retail / ROOMS[i].count) : el('td', {}),
     el('td', { class: 'how' }, how),
     el('td', {}, el('span', { class: 'tag tag-' + type.toLowerCase() }, type)))));
 
@@ -204,9 +205,9 @@ function renderSummary(c) {
     el('th', {}, label),
     el('td', { class: 'num' }, charged == null ? '' : usd(charged)),
     el('td', { class: 'num' }, retail == null ? '' : usd(retail)),
-    charged != null && retail != null ? diffCell(charged, retail) : el('td', {}),
+    charged != null && retail != null ? diffCell(charged / BUNGALOWS, retail / BUNGALOWS) : el('td', {}),
     el('td', { class: 'how', colspan: 2 }, how)));
-  line('Total', c.quote, c.retail, `Package ${diff <= 0 ? 'below' : 'above'} retail by ${Math.abs(diff / c.retail * 100).toFixed(1)}%`, diff <= 0 ? 'better' : 'worse');
+  line('Total', c.quote, c.retail, `Package ${diff <= 0 ? 'below' : 'above'} retail by ${usd(Math.abs(diff))} (${Math.abs(diff / c.retail * 100).toFixed(1)}%); per room is the average over 28 bungalows`, diff <= 0 ? 'better' : 'worse');
   line('Left in the package after lodging', afterLodging, null, '');
   line('…after regular meals', afterBoard, null, '');
   line('…after the gala dinner', afterGala, null, `${usd(afterGala / c.guests)} per reception guest for drinks and service`);
@@ -365,8 +366,8 @@ function renderRooms() {
     retail += each * r.count;
     body.append(el('tr', {},
       el('td', {}, r.type), el('td', { class: 'num' }, String(r.count)),
-      el('td', { class: 'num' }, mxn(r.direct)), el('td', { class: 'num' }, '$' + r.booking),
-      el('td', { class: 'num' }, mxn(r.pre) + ' → ' + mxn(r.sale)),
+      el('td', { class: 'num' }, usd(r.direct / fx())), el('td', { class: 'num' }, usd(r.booking)),
+      el('td', { class: 'num' }, usd(r.pre / fx()) + ' → ' + usd(r.sale / fx())),
       el('td', { class: 'num' }, usd(each)), el('td', { class: 'num' }, usd(r.quote * 2)),
       el('td', { class: 'num' }, usd(each * r.count)), el('td', { class: 'num' }, usd(r.quote * 2 * r.count))));
   });
@@ -385,7 +386,7 @@ function renderMeals(c) {
       const last = n === m.items.length - 1;
       body.append(el('tr', { class: n === 0 ? 'group-start' : '' },
         el('td', {}, n === 0 ? m.meal : ''), el('td', {}, i[0]), el('td', {}, i[1]),
-        el('td', {}, i[2]), el('td', { class: 'num' }, String(i[3])),
+        el('td', {}, i[2]), el('td', { class: 'num' }, usd2(i[3])),
         el('td', { class: 'num' }, last ? usd(total / fx()) : ''),
         el('td', { class: 'num' }, last ? usd(total * c.res / fx()) : '')));
     });
@@ -395,14 +396,15 @@ function renderMeals(c) {
 function renderReception(c) {
   const body = document.querySelector('#gala tbody');
   body.textContent = '';
-  GALA.forEach(g => body.append(el('tr', {}, ...g.map((v, i) => el('td', { class: i === 4 ? 'num' : '' }, String(v))))));
+  GALA.forEach(g => body.append(el('tr', {}, ...g.slice(0, 4).map(v => el('td', {}, v)), el('td', { class: 'num' }, usd2(g[4])))));
   const foot = document.querySelector('#gala tfoot');
   foot.textContent = '';
   foot.append(el('tr', {}, el('th', { colspan: 4 }, `Per guest ${usd(GALA_MXN / fx())} · × ${c.guests} guests = ${usd(c.gala)}`),
-    el('td', { class: 'num' }, String(GALA_MXN))));
+    el('td', { class: 'num' }, usd2(GALA_MXN))));
   const dbody = document.querySelector('#drinks tbody');
   dbody.textContent = '';
-  DRINKS.forEach(d => dbody.append(el('tr', {}, el('td', {}, d[0]), el('td', {}, d[1]), el('td', { class: 'num' }, d[2]))));
+  DRINKS.forEach(([name, what, prices, note]) => dbody.append(el('tr', {}, el('td', {}, name), el('td', {}, what),
+    el('td', { class: 'num' }, (prices ? prices.map(usd2).join(' / ') : '') + (note ? (prices ? ' (' + note + ')' : note) : '')))));
   document.getElementById('coral').textContent =
     `${usd(2100 * c.guests / fx())} for ${c.guests} guests (${usd(2100 * 1.16 * c.guests / fx())} with IVA)`;
   const saleTotal = ROOMS.reduce((s, r) => s + r.sale * TAX / fx() * NIGHTS * r.count, 0);
