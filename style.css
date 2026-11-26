@@ -1045,8 +1045,6 @@ main {
 .budget-table input.name { width: 14rem; }
 .budget-table tfoot th { font-weight: 400; color: var(--ink-soft); }
 .budget-table tfoot td { font-weight: 500; }
-.budget-table td.usd,
-.budget-table tfoot td:last-child { color: var(--ink-soft); font-weight: 300; }
 .budget-table .picked input { font-weight: 500; border-bottom-color: var(--accent); }
 .budget-table .better { color: var(--p-ocean); }
 .budget-table .worse  { color: var(--accent); }

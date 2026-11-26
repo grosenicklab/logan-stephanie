@@ -24,9 +24,9 @@ const DEFAULTS = {
     { name: 'Cocolia: gala dinner, 80 guests', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' },
     { name: 'Cocolia: cocktail party, 80 guests', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' },
     { name: 'F&B tips (mandatory per contract)', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' },
-    { name: 'DJ and sound', cur: 'MXN', a: '', b: '', c: '', pick: 'a', paid: '' },
-    { name: 'Flowers', cur: 'MXN', a: '', b: '', c: '', pick: 'a', paid: '' },
-    { name: 'Decorations', cur: 'MXN', a: '', b: '', c: '', pick: 'a', paid: '' }
+    { name: 'DJ and sound', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' },
+    { name: 'Flowers', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' },
+    { name: 'Decorations', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' }
   ]
 };
 
@@ -48,10 +48,13 @@ const num = v => {
   const n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
   return Number.isFinite(n) ? n : null;
 };
-const fmt = (n, cur) => n == null ? '–' :
-  (cur === 'USD' ? '$' : '') + Math.round(n).toLocaleString('en-US') + (cur === 'USD' ? '' : ' MXN');
+// Everything is shown in USD; peso amounts are converted at the rate set above.
+const fmt = (n, cur) => {
+  if (n == null) return '–';
+  const v = Math.round(cur === 'USD' ? n : n / state.fx);
+  return (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US');
+};
 const toMXN = (n, cur) => n == null ? null : cur === 'USD' ? n * state.fx : n;
-const usd = mxn => mxn == null ? '' : '≈ $' + Math.round(mxn / state.fx).toLocaleString('en-US');
 const withTax = n => n == null ? null : state.tax ? n * (1 + TAX) : n;
 
 function el(tag, attrs, ...kids) {
@@ -67,7 +70,7 @@ function el(tag, attrs, ...kids) {
 
 // The buyout is priced in USD per person for the whole stay, full board, two
 // people per bungalow; the website sells rooms by the night in MXN, room only.
-// Both are turned into MXN per room per night to line them up.
+// Both are turned into USD per room per night to line them up.
 const perRoomNight = usdPerPerson => usdPerPerson * 2 * state.fx / state.nights;
 
 function renderRooms() {
@@ -115,10 +118,9 @@ function roomTotals() {
   const n = state.nights;
   const foot = document.querySelector('#rooms tfoot');
   const rooms = ROOMS.reduce((s, r) => s + r.count, 0);
-  const line = (label, mxn, note) => el('tr', {},
-    el('th', { colspan: 5 }, label),
-    el('td', { class: 'num' }, fmt(mxn)),
-    el('td', { class: 'num' }, note || usd(mxn)));
+  const line = (label, mxn) => el('tr', {},
+    el('th', { colspan: 6 }, label),
+    el('td', { class: 'num' }, fmt(mxn)));
   foot.textContent = '';
   foot.append(
     line(`Public rates, ${rooms} rooms × ${n} nights, room only`, withTax(pub * n)),
@@ -188,7 +190,7 @@ function itemTotals() {
   const line = (label, mxn) => el('tr', {},
     el('th', { colspan: 6 }, label),
     el('td', { class: 'num', colspan: 2 }, fmt(mxn)),
-    el('td', { class: 'num usd' }, usd(mxn)));
+    el('td', {}));
   foot.textContent = '';
   foot.append(line('Total, options chosen', chosen), line('Paid so far', paid), line('Still owed', chosen - paid));
 }
@@ -214,7 +216,7 @@ const status = msg => {
 };
 
 document.getElementById('b-add').addEventListener('click', () => {
-  state.items.push({ name: '', cur: 'MXN', a: '', b: '', c: '', pick: 'a', paid: '' });
+  state.items.push({ name: '', cur: 'USD', a: '', b: '', c: '', pick: 'a', paid: '' });
   save();
   renderItems();
   document.querySelector('#items tbody tr:last-child input').focus();
@@ -224,8 +226,8 @@ document.getElementById('b-add').addEventListener('click', () => {
 document.getElementById('b-copy').addEventListener('click', async () => {
   const rows = [['Item', 'Currency', 'Option A', 'Option B', 'Option C', 'Going with', 'Paid']]
     .concat(state.items.map(it => [it.name, it.cur, it.a, it.b, it.c, it.pick.toUpperCase(), it.paid]))
-    .concat([[], ['Room type', 'Rooms', 'Public / night (MXN)', 'Sale / night (MXN)', 'Contract (USD per person, stay)']])
-    .concat(ROOMS.map(r => [r.type, r.count, r.pub, r.sale, state.quote[r.type] || '']));
+    .concat([[], ['Room type', 'Rooms', 'Public / night (USD)', 'Sale / night (USD)', 'Contract (USD per person, stay)']])
+    .concat(ROOMS.map(r => [r.type, r.count, Math.round(r.pub / state.fx), Math.round(r.sale / state.fx), state.quote[r.type] || '']));
   try {
     await navigator.clipboard.writeText(rows.map(r => r.join('\t')).join('\n'));
     status('Copied: paste into a sheet.');
