@@ -76,10 +76,9 @@ const OPTIONS = {
   residents: { label: 'Residents', choices: [[56, '56 (agreement)'], [47, '47 (our roster)']] },
   guests:    { label: 'Reception guests', choices: [[65, '65'], [70, '70'], [80, '80 (hotel)']] },
   drinks:    { label: 'Drinks per guest', choices: [[0, 'None'], [2, '2'], [3.5, '3½'], [5, '5']] },
-  tax:       { label: 'Tax on our quote', choices: [['in', 'Included'], ['added', '+19% added']] },
   fx:        { label: 'MXN per USD', choices: [['research', '19.37 (audit)'], ['live', 'Today']] }
 };
-const DEFAULTS = { rooms: 'direct', meals: 'dish', breakfast: 'no', residents: 56, guests: 70, drinks: 3.5, tax: 'in', fx: 'research' };
+const DEFAULTS = { rooms: 'direct', meals: 'dish', breakfast: 'no', residents: 56, guests: 70, drinks: 3.5, fx: 'research' };
 
 let state = load();
 let liveFx = null;
@@ -135,7 +134,7 @@ function compute() {
   const lunches = mealUSD('lunch');
   const gala = GALA_MXN * guests / fx();
   const drinks = DRINK_MXN * Number(state.drinks) * guests / fx();
-  const quote = state.tax === 'added' ? QUOTE * TAX : QUOTE;
+  const quote = QUOTE;   // tax included, confirmed with the hotel
   const board = breakfasts + lunches + dinners;
   return { res, guests, lodging, breakfasts, lunches, dinners, board, gala, drinks, quote,
     retail: lodging + board + gala + drinks };
@@ -182,7 +181,7 @@ function renderSummary(c) {
     ['2 regular dinners', bundled, c.dinners, state.meals === 'plan' ? `MXN 694 × 1.19 ÷ ${f} × 28 bungalows × 2` : `Cacao dishes × ${c.res} residents`, 'Model'],
     [`Gala dinner, ${c.guests} guests`, 'TBA, $0 *', c.gala, `MXN ${GALA_MXN.toLocaleString('en-US')} × ${c.guests} ÷ ${f}`, 'Model'],
     [`Cocktail party, ${c.guests} guests`, 'TBA, $0 *', c.drinks, `${state.drinks} drinks × MXN ${DRINK_MXN} × ${c.guests} ÷ ${f}`, 'Model'],
-    ['VAT 16% + city tax 3%', state.tax === 'added' ? QUOTE * (TAX - 1) : 'Blank (–)', null, 'In the retail room rates above; Cacao prices include VAT', 'Open'],
+    ['VAT 16% + city tax 3%', 'Included', null, 'In the retail room rates above; Cacao prices include VAT', 'Quote'],
     ['Service charge, F&B tips', 'Mandatory, % not given', null, 'Not included (Cacao suggests 15%)', 'Open']
   );
   const body = document.querySelector('#summary tbody');
@@ -281,8 +280,8 @@ function renderChart() {
   // The contract as a reference across every date, solid over our own nights.
   add('line', { x1: L, x2: W - R, y1: y(PACKAGE_NIGHT), y2: y(PACKAGE_NIGHT), class: 'c-package c-package-ref' });
   add('line', { x1: x(WEDDING[0]) - band / 2, x2: x(WEDDING[2]) + band / 2, y1: y(PACKAGE_NIGHT), y2: y(PACKAGE_NIGHT), class: 'c-package' });
-  add('text', { x: L + 4, y: y(PACKAGE_NIGHT) - 6, class: 'c-label' }, `Our contract, Nature View: ${usd(PACKAGE_NIGHT)} a night, with meals, gala and bar`);
-  add('text', { x: L + 4, y: y(PACKAGE_NIGHT / TAX) + 14, class: 'c-label c-label-soft' }, `Same, before 19% tax if it is included: ${usd(PACKAGE_NIGHT / TAX)}`);
+  add('text', { x: L + 4, y: y(PACKAGE_NIGHT) - 6, class: 'c-label' }, `Our contract, Nature View: ${usd(PACKAGE_NIGHT)} a night with tax, meals, gala and bar`);
+  add('text', { x: L + 4, y: y(PACKAGE_NIGHT / TAX) + 14, class: 'c-label c-label-soft' }, `Same, before its 19% tax (compare with the rates below): ${usd(PACKAGE_NIGHT / TAX)}`);
   add('line', { x1: L, x2: W - R, y1: y(PACKAGE_NIGHT / TAX), y2: y(PACKAGE_NIGHT / TAX), class: 'c-package-ref c-package-pretax' });
 
   const box = document.getElementById('chart');
@@ -348,7 +347,7 @@ function renderPerDay(c) {
   foot.append(
     el('tr', {}, el('th', {}, 'Retail per guest'), ...cells(totals, retailStay)),
     el('tr', {}, el('th', {}, `Our package ÷ ${c.res} residents`),
-      el('td', { colspan: 4, class: 'how' }, state.tax === 'added' ? '$46,372 + 19% tax, all-inclusive' : '$46,372, all-inclusive'),
+      el('td', { colspan: 4, class: 'how' }, '$46,372, tax and everything included'),
       el('td', { class: 'num' }, usd(pkg)), el('td', { class: 'num' }, usd(pkg / NIGHTS))),
     el('tr', { class: pkg <= retailStay ? 'better' : 'worse' },
       el('th', {}, pkg <= retailStay ? 'Package saves per guest' : 'Package costs more per guest by'),
