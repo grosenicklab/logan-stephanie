@@ -1174,3 +1174,6 @@ main {
 .c-package-ref { stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 5 4; }
 .c-package-pretax { opacity: 0.5; }
 .c-label-soft { opacity: 0.7; }
+.budget-resolved-note { font-size: 0.92rem; color: var(--p-ocean); margin-bottom: 1rem; }
+.budget-resolved li::marker { color: var(--p-ocean); }
+.budget-resolved li b::after { content: " ✓ resolved"; font-weight: 500; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--p-ocean); margin-left: 0.4rem; }
